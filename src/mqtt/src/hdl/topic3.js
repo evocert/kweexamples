@@ -1,0 +1,9 @@
+<@
+//console.Log("topic3:start");
+try{
+	//console.Log(["topic3",mqttmsg.String()].join(":"));
+}catch(e){
+	//console.Log(["topic3","error",e.toString()].join(":"));
+}
+//console.Log("topic3:end");
+@>

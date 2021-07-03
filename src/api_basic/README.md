@@ -1,5 +1,3 @@
-# BASIC API EXAMPLE
-
 Demonstration of creating a basic API using the KWE server.
 
 Sample usage:

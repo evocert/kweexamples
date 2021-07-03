@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="utf-8">
+		<title>Mqtt Test</title>
+		<script type="application/javascript" src="webactions.bundle.js"></script>
+		<style>
+*{
+	-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none;
+}
+*{
+	background:#000000;
+	color:#888888;
+	border:unset;
+	font-family:monospace;
+}
+button{
+	background:#888888;
+	color:#CCCCCC;
+	margin:0px;
+	overflow:hidden;
+	padding:4px;
+	text-align:left;
+}
+sup{
+	float:right;
+	color:#FFFFFF;
+	background:#AAAAAA;
+	padding:1px;
+	margin:1px;
+	border-radius:2px;
+}
+input{
+	background:#444444;
+}
+
+		</style>
+	</head>
+	<body>
+		<button style="width: 100%;margin-bottom: 8px;">MQTTCON</button>
+		<div style="background:#444444;" id="ctl">
+			<button class="alt-l" id="btn0" onClick="postElem(this)" target="#output" url_ref="./api/?cmd=getcons" form_ref="#ctl">List Connections <sup>ALT+L</sup></button>
+			<button class="alt-c" id="btn0" onClick="postElem(this)" target="#output" url_ref="./api/?cmd=newcon" form_ref="#ctl">New Connection<sup>ALT+C</sup></button>
+			<button class="alt-t" id="btn0" onClick="postElem(this)" target="#output" url_ref="./api/?cmd=gettopics" form_ref="#ctl">List Topics<sup>ALT+T</sup></button>
+		</div><br/>
+		<div id="output"></div>
+		<script>
+// find elements
+var banner = $("#banner-message")
+var button = $("button")
+
+// handle click and add class
+button.on("click", function(){
+	if(banner.hasClass("alt"))
+  	banner.removeClass("alt")
+  else
+  	banner.addClass("alt")
+})
+
+$(document).ready(function(){
+	$(document).on('keydown', function (e) {
+		/*
+		console.log(e.ctrlKey&&e.shiftKey);
+		console.log(e.ctrlKey);
+		console.log(e.shiftKey);
+		console.log(e.metaKey);
+		console.log(e);//.ctrlKey&&e.shiftKey);
+		*/
+			if(e.ctrlKey&&!e.altKey&&e.key.length==1){
+				e.stopPropagation();
+				e.preventDefault();
+				console.log("ctrl-"+e.key);
+				$("."+"ctrl-"+e.key).click();
+			}
+			if(!e.ctrlKey&&e.altKey&&e.key.length==1){
+				e.stopPropagation();
+				e.preventDefault();
+				console.log("alt-"+e.key);
+				$("."+"alt-"+e.key).click();
+			}
+			if(e.ctrlKey&&e.altKey&&e.key.length==1){
+				console.log("X");
+				console.log(e.key);
+				e.stopPropagation();
+				e.preventDefault();
+				console.log("ctrl-alt-"+e.key);
+				$("."+"ctrl-alt-"+e.key).click();
+			}
+
+
+		/*
+		if(e.key!="Control"){
+			if(e.ctrlKey){
+				e.stopPropagation();
+				e.preventDefault();
+				console.log("ctrl-"+e.key);
+				$("."+"ctrl-"+e.key).click();
+			}
+		}
+		if(e.key!="Alt"){
+			if(e.altKey){
+				e.stopPropagation();
+				e.preventDefault();
+				console.log("alt-"+e.key);
+				$("."+"alt-"+e.key).click();
+			}
+		}
+		*/
+		/*
+		if(e.key!="Control"&&e.shiftKey){
+			if(e.ctrlKey){
+				e.stopPropagation();
+				e.preventDefault();
+				console.log("ctrl-shift-"+e.key);
+				$("."+"ctrl-shift-"+e.key).click();
+			}
+		}
+		if(e.key!="Shift"){
+			if(e.shiftKey){
+				e.stopPropagation();
+				e.preventDefault();
+				console.log("shift-"+e.key);
+				//$("."+"shift-"+e.key).click();
+			}
+		}
+		*/
+
+        });
+});
+		</script>
+	</body>
+</html>

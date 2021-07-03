@@ -1,0 +1,9 @@
+#!/bin/bash
+./connect.sh
+./subscribe.sh
+./activate.sh
+./publish.sh
+./deactivate.sh
+./unsubscribe.sh
+./disconnect.sh
+./stat.sh
