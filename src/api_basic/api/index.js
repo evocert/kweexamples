@@ -31,33 +31,36 @@
 	}).forEach(function(k){
 		options[k]=parameters[k];
 	});
-	if(typeof(cmd[parameters.cmd])=="function"){
-		try{
-
-			cmd[parameters.cmd](options);
-		}catch(e){
-			request.ResponseHeader().Set("Content-Type","application/json");
-			print(JSON.stringify({"error":e.toString()}));
+	try{
+		if(typeof(parameters.cmd)=="undefined"||paramters.cmd==null){
+			throw("ECMD");
 		}
-	}else{
-		try{
-			//--------------------------------------------------------------------------------
-			//api cmds from ./cmd
-			//--------------------------------------------------------------------------------
-			require(["./cmd/"+parameters.cmd],function(cb){
-				if(typeof(cb)=="function"){
-					cb(options);
-				}else{
-					request.ResponseHeader().Set("Content-Type","application/json");
-					print(JSON.stringify({"error":"EMOD"}));
-				}
-			},function(e){
+		if(typeof(cmd[parameters.cmd])=="function"){
+			try{
+
+				cmd[parameters.cmd](options);
+			}catch(e){
 				request.ResponseHeader().Set("Content-Type","application/json");
 				print(JSON.stringify({"error":e.toString()}));
-			});
-		}catch(e){
-			request.ResponseHeader().Set("Content-Type","application/json");
-			print(JSON.stringify({"error":e.toString()}));
+			}
+		}else{
+				//--------------------------------------------------------------------------------
+				//api cmds from ./cmd
+				//--------------------------------------------------------------------------------
+				require(["./cmd/"+parameters.cmd],function(cb){
+					if(typeof(cb)=="function"){
+						cb(options);
+					}else{
+						request.ResponseHeader().Set("Content-Type","application/json");
+						print(JSON.stringify({"error":"EMOD"}));
+					}
+				},function(e){
+					request.ResponseHeader().Set("Content-Type","application/json");
+					print(JSON.stringify({"error":e.toString()}));
+				});
 		}
+	}catch(e){
+		request.ResponseHeader().Set("Content-Type","application/json");
+		print(JSON.stringify({"error":e.toString()}));
 	}
 @>
