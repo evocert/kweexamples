@@ -6,10 +6,10 @@ Make sure you have an `mqtt` server running, `./src/mosquitto.sh` is provided in
 Prerequisites: `curl`, `bash/cmd`, `mosquitto`
 
 Instructions:
-	* deploy to `/mqtt`
-	* kwe server assumed `localhost:8081`
-	* mosquitto server assumed at `locahost:1883`, you can start mosquitto server with `mosquitto.[sh|bat]`
-	* run `test[bat|sh]`
+* deploy to `/mqtt`
+* kwe server assumed `localhost:8081`
+* mosquitto server assumed at `locahost:1883`, you can start mosquitto server with `mosquitto.[sh|bat]`
+* run `test[bat|sh]`
 
 Alternatively invoke manual scripts for testing
 
