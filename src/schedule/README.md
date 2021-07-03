@@ -1,1 +1,1 @@
-KWE schedule template. Copy this into your public web directory and edit to files in `./src` to get started. Schedules allows you to set up background jobs and can be used along side with `caching`to facilitate control and feedback.
+KWE schedule template. Copy this into your public web directory and edit to files in `./src` to get started. Schedules allows you to set up background jobs and can be used along side with `caching` to facilitate control and feedback.
