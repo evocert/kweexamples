@@ -5,7 +5,11 @@
 		_fsutils.FIND("./www/kweexamples/src").filter(function(e){
 			return e.Name().endsWith(".md");
 		}).forEach(function(e){
-			filelist.push(e.Path().substring(base.length));
+			var o={
+				path:e.Path().substring(base.length),
+				readme:_fsutils.CATS(e.Path())
+			};
+			filelist.push(o);//e.Path().substring(base.length));
 		}.bind(this));
 		request.ResponseHeader().Set("Content-Type","application/json");
 		print(JSON.stringify(filelist));
