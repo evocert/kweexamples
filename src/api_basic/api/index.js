@@ -1,6 +1,4 @@
 <@
-	delete requirejs;delete require;delete define;	//todo: fix up requirejs, for now load custom
-	eval(_scriptinclude("./lib/require.js"));	//
 	//--------------------------------------------------------------------------------
 	//internal api cmds here
 	//--------------------------------------------------------------------------------
