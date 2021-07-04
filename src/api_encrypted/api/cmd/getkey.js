@@ -1,0 +1,12 @@
+define([
+	"module",
+	"config"
+],function(
+	module,
+	config
+){
+	module.exports=function(options){
+		request.ResponseHeader().Set("Content-Type","application/json");
+		print(JSON.stringify({"key":config.key}));
+	};
+});
