@@ -5,11 +5,14 @@
 		_fsutils.FIND("./www/kweexamples/src").filter(function(e){
 			return e.Name().endsWith(".md");
 		}).forEach(function(e){
-			var o={
-				path:e.Path().substring(base.length),
-				readme:_fsutils.CATS(e.Path())
-			};
-			filelist.push(o);//e.Path().substring(base.length));
+			var path=e.Path().substring(base.length);
+			if(path.split("/").length==3){//only first level
+				var o={
+					path:path
+					//readme:_fsutils.CATS(e.Path())
+				};
+				filelist.push(o);
+			}
 		}.bind(this));
 		request.ResponseHeader().Set("Content-Type","application/json");
 		print(JSON.stringify(filelist));

@@ -1,0 +1,20 @@
+require.config({
+	"paths":{
+		"text":"./require.text",
+		"webaction":"/webaction.bundle",
+		"parsing":"/parsing",
+		"jquery":"/jquery",
+		"frag":"../frag",
+	}
+});
+require([
+	"module",
+	"render",
+	"app",
+],function(
+	module,
+	render,
+	app,
+){
+	render(app);
+});

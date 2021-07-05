@@ -1,0 +1,21 @@
+*{
+	background:#000000;
+	color:#00FF00;
+	border:unset;
+}
+body *{
+	font-family:monospace;
+}
+button,
+input{
+	background:#008800;
+}
+.error{
+	background:#880000;
+	color:#FF8888;
+	display:inline;
+	padding:2px;
+	padding-left:8px;
+	padding-right:8px;
+	text-align:center;
+}
