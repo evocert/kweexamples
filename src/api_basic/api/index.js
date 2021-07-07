@@ -1,4 +1,12 @@
 <@
+require([
+	"module",
+	"./lib/request.js",
+],function(
+	module,
+	r
+){
+	console.Log(JSON.stringify(r,0,2));
 	//--------------------------------------------------------------------------------
 	//internal api cmds here
 	//--------------------------------------------------------------------------------
@@ -17,50 +25,44 @@
 		}
 	}
 	//--------------------------------------------------------------------------------
-	var parameters={}
-	request.Parameters().StandardKeys().forEach(function(k){
-		try{
-			parameters[k.toLowerCase()]=eval(request.Parameters().StringParameter(k));
-		}catch(e){
-			parameters[k.toLowerCase()]=request.Parameters().StringParameter(k);
-		}
-	});
 	var options={};
-	Object.keys(parameters).filter(function(k,v){
+	Object.keys(r.parameters).filter(function(k,v){
 		return k!="cmd";
 	}).forEach(function(k){
-		options[k]=parameters[k];
+		options[k]=r.parameters[k];
 	});
 	try{
-		if(typeof(parameters.cmd)=="undefined"||paramters.cmd==null){
+		if(typeof(r.parameters.cmd)=="undefined"||r.parameters.cmd==null){
 			throw("ECMD");
 		}
-		if(typeof(cmd[parameters.cmd])=="function"){
+		if(typeof(cmd[r.parameters.cmd])=="function"){
 			try{
 
-				cmd[parameters.cmd](options);
+				cmd[r.parameters.cmd](options);
 			}catch(e){
 				request.ResponseHeader().Set("Content-Type","application/json");
 				print(JSON.stringify({"error":e.toString()}));
 			}
 		}else{
-				//--------------------------------------------------------------------------------
-				//api cmds from ./cmd
-				//--------------------------------------------------------------------------------
-				require(["./cmd/"+parameters.cmd],function(cb){
-					if(typeof(cb)=="function"){
-						cb(options);
-					}else{
-						request.ResponseHeader().Set("Content-Type","application/json");
-						print(JSON.stringify({"error":"EMOD"}));
-					}
-				},function(e){
+			//--------------------------------------------------------------------------------
+			//api cmds from ./cmd
+			//--------------------------------------------------------------------------------
+			require(["./cmd/"+r.parameters.cmd],function(cb){
+				if(typeof(cb)=="function"){
+					cb(options);
+				}else{
 					request.ResponseHeader().Set("Content-Type","application/json");
-					print(JSON.stringify({"error":e.toString()}));
-				});
+					print(JSON.stringify({"error":"EMOD"}));
+				}
+			},function(e){
+				//request.ResponseHeader().Set("Content-Type","application/json");
+				//print(JSON.stringify({"error":e.toString()}));
+				//return;
+			});
 		}
 	}catch(e){
 		request.ResponseHeader().Set("Content-Type","application/json");
 		print(JSON.stringify({"error":e.toString()}));
 	}
+});
 @>
