@@ -1,6 +1,5 @@
 define(["module"],function(module){
 	module.exports=function(options){
-		request.ResponseHeader().Set("Content-Type","application/json");
 		try{
 			if(typeof(options.url)!="string")throw("EURL");
 			if(typeof(options.out)!="string")throw("EOUT");
@@ -8,16 +7,23 @@ define(["module"],function(module){
 				//todo: push into buffer
 				//extract links
 				//push buffer to file
+				request.ResponseHeader().Set("Content-Type","application/json");
 				print(JSON.stringify({"status":"UNIMPLEMENTED"}));
 			}else{
 				var a=webing.Send(
 					options.url
 				);
-				_fsutils.SET("./a.dat",a);
-				print(JSON.stringify({"status":"OK","meta":{"url":options.url}}));
+				if(options.out=="-"){
+					print(a);
+				}else{
+					_fsutils.SET("./a.dat",options.out);
+					request.ResponseHeader().Set("Content-Type","application/json");
+					print(JSON.stringify({"status":"OK","meta":{"url":options.url,"out":options.out}}));
+				}
 				//print(a);
 			}
 		}catch(e){
+			request.ResponseHeader().Set("Content-Type","application/json");
 			print(JSON.stringify({"error":e.toString()}));
 		}
 	};
