@@ -2,6 +2,8 @@
 PROTOCOL=http
 HOST=localhost
 PORT=8081
+HOST=skullquake.dedicated.co.za
+PORT=80
 ENDPOINT=/kweexamples/src/api_basic/api/
 URL=$PROTOCOL://$HOST:$PORT$ENDPOINT
 echo query parameters:
