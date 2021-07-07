@@ -16,6 +16,7 @@ define(["module"],function(module){
 				if(options.out=="-"){
 					print(a);
 				}else{
+					throw("EACCESS");
 					_fsutils.SET("./a.dat",options.out);
 					request.ResponseHeader().Set("Content-Type","application/json");
 					print(JSON.stringify({"status":"OK","meta":{"url":options.url,"out":options.out}}));
