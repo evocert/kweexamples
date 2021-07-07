@@ -19,4 +19,4 @@ an attempt is made to load in the command from `./api/cmd`
 
 A test script `./test.sh` is provided illustrating basic endpoint invocation.
 
-Live example available <a href="http://skullquake.dedicated.co.za/kweexamples/src/api_basic/" target="_blank">here</a>
+Live example available <a href="http://skullquake.dedicated.co.za/kweexamples/src/api_basic/api/" target="_blank">here</a>
