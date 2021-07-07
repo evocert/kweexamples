@@ -35,6 +35,7 @@ define([
 		}
 	}else if(headers["Content-Type"]&&headers["Content-Type"].startsWith("application/xml")){
 		try{
+			/*
 			var parser=new DomParser();
 			var dom=parser.parseFromString(request.RequestBodyS());
 			var api=dom.getElementsByTagName("api");
@@ -49,6 +50,31 @@ define([
 				});
 			}else{
 			}
+
+			*/
+			var parser=new DomParser();
+			var dom=parser.parseFromString(request.RequestBodyS());
+			var api=dom.getElementsByTagName("api");
+			api=api.length>0?api[0]:null;
+			var root={};
+			function build(nod,obj){
+				try{
+					var o=obj;//ctx loss on par
+					if(nod!=null&&typeof(nod.childNodes)!="undefined"){
+						nod.childNodes.forEach(function(cnod){
+							o[cnod.nodeName]={};
+							build(cnod,o[cnod.nodeName]);
+							try{
+								o[cnod.nodeName]=eval(cnod.textContent);
+							}catch(e){
+								o[cnod.nodeName]=cnod.textContent;
+							}
+						}.bind(this));
+					}
+				}catch(e){}
+			};
+			build(api,root);
+			Object.keys(root).forEach(function(k){parameters[k]=root[k];});
 		}catch(e){
 			body=request.RequestBodyS();
 		}

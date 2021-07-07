@@ -27,6 +27,7 @@ curl -X POST -H "Content-Type: application/xml" --data '<?xml version="1.0" enco
 curl -X POST -H "Content-Type: application/xml" --data '<?xml version="1.0" encoding="UTF-8"?><api><cmd>sub</cmd><a>4</a><b>2</b></api>' "$URL" --output -
 curl -X POST -H "Content-Type: application/xml" --data '<?xml version="1.0" encoding="UTF-8"?><api><cmd>mul</cmd><a>4</a><b>2</b></api>' "$URL" --output -
 curl -X POST -H "Content-Type: application/xml" --data '<?xml version="1.0" encoding="UTF-8"?><api><cmd>div</cmd><a>4</a><b>2</b></api>' "$URL" --output -
+curl -X POST -H "Content-Type: application/xml" --data '<?xml version="1.0" encoding="UTF-8"?><api><cmd>div</cmd><a>4</a><b>2</b><c><d><e>4</e><f>2</f></d></c></api>' "$URL" --output -
 echo query parameters and xml body:
 curl -X POST -H "Content-Type: application/xml" --data '<?xml version="1.0" encoding="UTF-8"?><api><a>4</a><b>2</b></api>' "$URL?cmd=add" --output -
 curl -X POST -H "Content-Type: application/xml" --data '<?xml version="1.0" encoding="UTF-8"?><api><a>4</a><b>2</b></api>' "$URL?cmd=sub" --output -
