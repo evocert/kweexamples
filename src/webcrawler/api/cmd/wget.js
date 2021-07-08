@@ -36,10 +36,11 @@ define([
 										var a=dom.getElementsByTagName("a");
 										a.forEach(function(anod){
 											var href=anod.getAttribute("href");
-											console.Log(href);
 											if(typeof(href)=="undefined"||href==null||href.length==0)return;
+											href=href.trim();
 											if(href.indexOf("../")>0)return;//avoid relative for now
 											if(href[0]=="#")return;//skip hashtags
+											if(href[0]=="?")return;//skip qparams
 											if(href.indexOf("mailto:")==0)return;//avoid mailto
 											//if(href.indexOf("http://")==0)return;//skip direct links
 											//if(href.indexOf("https://")==0)return;//skip direct links
@@ -58,7 +59,6 @@ define([
 							}
 						);
 					}
-					console.Log(options.url);
 					build(options.url,"/")
 					request.ResponseHeader().Set("Content-Type","application/json");
 					print(JSON.stringify({"links":links},0,2));
