@@ -7,9 +7,9 @@ PORT=8081
 ENDPOINT=/kweexamples/src/webcrawler/api/
 URL=$PROTOCOL://$HOST:$PORT$ENDPOINT
 WGET_TGT=http://localhost:8083/
-WGET_TGT=https://docs.qgis.org/2.14/pdf/
 WGET_TGT=https://gcc.gnu.org/releases.html
 WGET_TGT=https://gcc.gnu.org/onlinedocs/
+WGET_TGT=https://docs.qgis.org/2.14/pdf/
 curl -X GET "$URL?cmd=wget&url="$WGET_TGT"&out=/downloads&recursive=true&debug=true" --output -
 #curl -X POST -H "Content-Type: application/json" --data '{"cmd":"wget","url":"'$WGET_TGT'","recursive":true,"out":"./downloads","debug":true}' "$URL" --output -
 
