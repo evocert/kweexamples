@@ -31,24 +31,31 @@ define([
 									if(typeof(contentType)=="string"&&contentType.indexOf("text/html")==0){
 										var body=response.Reader().ReadAll();
 										response.Reader().Close();
-										var parser=new DomParser();
-										var dom=parser.parseFromString(body);
-										var a=dom.getElementsByTagName("a");
-										a.forEach(function(anod){
-											var href=anod.getAttribute("href");
-											if(typeof(href)=="undefined"||href==null||href.length==0)return;
-											href=href.trim();
-											if(href.indexOf("../")>0)return;//avoid relative for now
-											if(href[0]=="#")return;//skip hashtags
-											if(href[0]=="?")return;//skip qparams
-											if(href.indexOf("mailto:")==0)return;//avoid mailto
-											//if(href.indexOf("http://")==0)return;//skip direct links
-											//if(href.indexOf("https://")==0)return;//skip direct links
-											if(!links[href]){//avoid revisit
-												links[href]=true;
-												build(base,href);
-											}
-										}.bind(this));
+										try{
+											var parser=new DomParser();
+											var dom=parser.parseFromString(body);
+											if(typeof(dom)=="undefined")return;
+											var a=dom.getElementsByTagName("a");
+											if(typeof(a)=="undefined")return;
+											if(a.length==0)return;
+											a.forEach(function(anod){
+												var href=anod.getAttribute("href");
+												if(typeof(href)=="undefined"||href==null||href.length==0)return;
+												href=href.trim();
+												if(href.indexOf("../")>0)return;//avoid relative for now
+												if(href[0]=="#")return;//skip hashtags
+												if(href[0]=="?")return;//skip qparams
+												if(href.indexOf("mailto:")==0)return;//avoid mailto
+												//if(href.indexOf("http://")==0)return;//skip direct links
+												//if(href.indexOf("https://")==0)return;//skip direct links
+												var extension=href.split(".").pop();
+												if(extension!="htm"&&extension!="html")return;//only htm/html files
+												if(!links[href]){//avoid revisit
+													links[href]=true;
+													build(base,href);
+												}
+											}.bind(this));
+										}catch(e){console.Log(e.toString());}
 									}else{
 										response.Reader().Close();
 									}
