@@ -49,7 +49,7 @@ define([
 												//if(href.indexOf("http://")==0)return;//skip direct links
 												//if(href.indexOf("https://")==0)return;//skip direct links
 												var extension=href.split(".").pop();
-												if(extension!="htm"&&extension!="html")return;//only htm/html files
+												//if(extension!="htm"&&extension!="html")return;//only htm/html files
 												if(!links[href]){//avoid revisit
 													links[href]=true;
 													build(base,href);
