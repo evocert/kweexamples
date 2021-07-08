@@ -27,7 +27,8 @@ define([
 							{
 								"success":function(method,response){
 									var hkarr=response.Headers();
-									if(response.Header("Content-Type")=="text/html"){
+									var contentType=response.Header("Content-Type")
+									if(typeof(contentType)=="string"&&contentType.indexOf("text/html")==0){
 										var body=response.Reader().ReadAll();
 										response.Reader().Close();
 										var parser=new DomParser();
@@ -35,12 +36,13 @@ define([
 										var a=dom.getElementsByTagName("a");
 										a.forEach(function(anod){
 											var href=anod.getAttribute("href");
+											console.Log(href);
 											if(typeof(href)=="undefined"||href==null||href.length==0)return;
 											if(href.indexOf("../")>0)return;//avoid relative for now
 											if(href[0]=="#")return;//skip hashtags
 											if(href.indexOf("mailto:")==0)return;//avoid mailto
-											if(href.indexOf("http://")==0)return;//skip direct links
-											if(href.indexOf("https://")==0)return;//skip direct links
+											//if(href.indexOf("http://")==0)return;//skip direct links
+											//if(href.indexOf("https://")==0)return;//skip direct links
 											if(!links[href]){//avoid revisit
 												links[href]=true;
 												build(base,href);
@@ -56,7 +58,8 @@ define([
 							}
 						);
 					}
-					build(options.url,"")
+					console.Log(options.url);
+					build(options.url,"/")
 					request.ResponseHeader().Set("Content-Type","application/json");
 					print(JSON.stringify({"links":links},0,2));
 				}else{
