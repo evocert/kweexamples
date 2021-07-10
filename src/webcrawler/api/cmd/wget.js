@@ -11,15 +11,27 @@ define([
 	module.exports=function(options){
 		try{
 			if(typeof(options.url)!="string")throw("EURL");
-			if(typeof(options.out)!="string")throw("EOUT");
+			//if(typeof(options.output)!="string")throw("EOUT");//unimplemented
+			if(typeof(options.maxdepth)!="number")options.maxdepth=Infinity;
+			if(typeof(options.maxvisit)!="number")options.maxvisit=Infinity;
 			if(typeof(options.recursive)!="boolean")options.recursive=false;
+			ridx=0;
+			maxr=options.maxvisit;
+			maxdepth=options.maxdepth;
 			if(options.recursive==true){
 				if(
 					(options.url.endsWith("/")||options.url.endsWith(".html")||options.url.endsWith(".htm"))
 				){
 					var links={};
-					function build(base,url){
-						if(options.debug==true)console.Log(url);
+					if(options.debug==true)console.Log("-".repeat(80));
+					function build(base,url,depth){
+						if(ridx>maxr)return;
+						if(depth>maxdepth)return;
+						depth=typeof(depth)=="number"?depth:0;
+						if(options.debug==true)console.Log("-".repeat(depth)+absolute(base,url));
+						if(links[absolute(base,url)])return;
+						links[absolute(base,url)]=true;
+						ridx++;
 						webing.Send(
 							//(absolute("","http://localhost:8081/foo/bar/../baz/../qux/../../klutz"));
 							//->http://localhost:8081/klutz
@@ -38,22 +50,21 @@ define([
 											var a=dom.getElementsByTagName("a");
 											if(typeof(a)=="undefined")return;
 											if(a.length==0)return;
+											var hrefbuf=[];
 											a.forEach(function(anod){
 												var href=anod.getAttribute("href");
 												if(typeof(href)=="undefined"||href==null||href.length==0)return;
-												href=href.trim();
 												if(href.indexOf("../")>0)return;//avoid relative for now
 												if(href[0]=="#")return;//skip hashtags
 												if(href[0]=="?")return;//skip qparams
 												if(href.indexOf("mailto:")==0)return;//avoid mailto
-												//if(href.indexOf("http://")==0)return;//skip direct links
-												//if(href.indexOf("https://")==0)return;//skip direct links
-												var extension=href.split(".").pop();
+												if(href.indexOf("http://")==0)return;//skip direct links
+												if(href.indexOf("https://")==0)return;//skip direct links
+												href=href.trim();
+												if(href[0]!="/")href=url+href;//hdl rel
+												//var extension=href.split(".").pop();
 												//if(extension!="htm"&&extension!="html")return;//only htm/html files
-												if(!links[href]){//avoid revisit
-													links[href]=true;
-													build(base,href);
-												}
+												build(base,href,depth+1);
 											}.bind(this));
 										}catch(e){console.Log(e.toString());}
 									}else{
