@@ -51,7 +51,7 @@ define([
 											if(typeof(a)=="undefined")return;
 											if(a.length==0)return;
 											var hrefbuf=[];
-											a.forEach(function(anod){
+											a.forEach(function(anod){try{
 												var href=anod.getAttribute("href");
 												if(typeof(href)=="undefined"||href==null||href.length==0)return;
 												if(href.indexOf("../")>0)return;//avoid relative for now
@@ -65,7 +65,7 @@ define([
 												//var extension=href.split(".").pop();
 												//if(extension!="htm"&&extension!="html")return;//only htm/html files
 												build(base,href,depth+1);
-											}.bind(this));
+											}catch(e){console.Log(e.toString());}}.bind(this));
 										}catch(e){console.Log(e.toString());}
 									}else{
 										response.Reader().Close();
