@@ -28,7 +28,7 @@ define([
 						if(ridx>maxr)return;
 						if(depth>maxdepth)return;
 						depth=typeof(depth)=="number"?depth:0;
-						if(options.debug==true)console.Log("-".repeat(depth)+absolute(base,url));
+						if(options.debug==true)console.Log("["+ridx+"]"+"-".repeat(depth)+absolute(base,url));
 						if(links[absolute(base,url)])return;
 						links[absolute(base,url)]=true;
 						ridx++;
@@ -72,7 +72,7 @@ define([
 									}
 								},
 								"error":function(e){//<- does not fire
-									console.Log(e.toString());
+									console.Log("XXX:"+e.toString());
 								}
 							}
 						);
