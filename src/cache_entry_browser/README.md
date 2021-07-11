@@ -9,6 +9,6 @@ curl -X POST -H "Content-Type: application/json" --data '{"cmd":"log","action":"
 curl -X POST -H "Content-Type: application/json" --data '{"cmd":"log","action":"create","msg":"test_3","debug":true}' "$URL" --output -
 curl -X POST -H "Content-Type: application/json" --data '{"cmd":"log","action":"search","query":"test_1","offset":0,"limit":10,"sort":"DESC","debug":true}' "$URL" --output -
 curl -X POST -H "Content-Type: application/json" --data '{"cmd":"log","action":"search","query":"lorem","offset":10,"limit":20,"sort":"ASC","debug":true}' "$URL" --output -
-curl -X POST -H "Content-Type: application/json" --data '{"cmd":"log","action":"list"}' "$URL" --output -
+curl -X POST -H "Content-Type: application/json" --data '{"cmd":"log","action":"clear","debug":true}' "$URL" --output -
 ```
 Live example available <a href="http://skullquake.dedicated.co.za/kweexamples/src/cache_entry_browser/" target="_blank">here</a>
