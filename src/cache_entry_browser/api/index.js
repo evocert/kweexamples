@@ -6,6 +6,7 @@ require([
 	module,
 	r
 ){
+	var t0=new Date();
 	//--------------------------------------------------------------------------------
 	//internal api cmds here
 	//--------------------------------------------------------------------------------
@@ -63,5 +64,7 @@ require([
 		request.ResponseHeader().Set("Content-Type","application/json");
 		print(JSON.stringify({"error":e.toString()}));
 	}
+	var t1=new Date();
+	console.Log("Total duration: "+(t1-t0)+" ms");
 });
 @>

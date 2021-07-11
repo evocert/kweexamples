@@ -1,11 +1,35 @@
-define(["module"],function(module){
+define([
+	"module",
+	"../lib/idutils"
+],function(
+	module,
+	idutils
+){
 	//init
 	var K="log";
 	if(caching.Find(K)==null)caching.Put(K,[[]]);
 	//api
-	module.exports=function(options){
+	function api(options){
 		var t0=new Date();
 		switch(options.action){
+			case"create_test_data":
+				var ret={"status":"OK"};
+				for(var i=0;i<10000;i++){
+					caching.Push(K,[{'ts':i,"msg":"test_"+idutils.uuidv4()}]);
+					caching.Reset();
+				}
+				/*
+				*/
+				/*
+				var cursor=caching.Find(K);
+				for(var i=0;i<cursor.length;i++){
+					var result=JSON.parse(cursor[i].String())
+				}
+				*/
+				if(options.debug==true)ret.debug={options:options};
+				if(options.debug==true)ret.debug.duration=(new Date()-t0)+" ms";
+				return ret;
+				break;
 			case"create":
 				caching.Push(K,[{'ts':new Date().getTime(),"msg":options.msg}]);
 				var ret={"status":"OK"};
@@ -25,7 +49,8 @@ define(["module"],function(module){
 				if(typeof(options.query)=="undefined")options.query="";
 				if(typeof(options.query)=="string")options.query=options.query.toString();
 				if(options.sort!="ASC"&&options.sort!="DESC")throw("EVSORT");
-				var val=caching.Find(K);
+				var cursor=caching.Find(K);
+				var ctime=(new Date())-t0;
 				var buf=[];
 				var idx_start=0;
 				var idx_inc=1;
@@ -36,16 +61,16 @@ define(["module"],function(module){
 						idx_inc=1;
 						break;
 					case"DESC":
-						idx_start=(val.length-options.offset-1);
+						idx_start=(cursor.length-options.offset-1);
 						idx_inc=-1;
 						break;
 					default:
 						throw("EVSORT");
 						break;
 				}
-				for(var i=idx_start;(idx_inc>0)?(i<val.length):(i>=0);i+=idx_inc){
-					if(nres>options.limit)break;nres++;
-					var result=JSON.parse(val[i].String())
+				for(var i=idx_start;(idx_inc>0)?(i<cursor.length):(i>=0);i+=idx_inc){
+					if(nres>options.limit)break;
+					var result=JSON.parse(cursor[i].String())
 					result.id=i;
 					var relevant=false;
 					if(options.query.length==0){
@@ -55,19 +80,23 @@ define(["module"],function(module){
 							if(result[k].toString().indexOf(options.query)>=0)relevant=true;
 						}.bind(this));
 					}
-					if(relevant)buf.push(result);
-				}
+					if(relevant){buf.push(result);nres++;}
 
+				}
 				var ret={result:buf};
 				if(options.debug==true)ret.debug={options:options};
 				if(options.debug==true)ret.debug.duration=(new Date()-t0)+" ms";
+				if(options.debug==true)ret.debug.ctime=ctime+" ms";
+				if(options.debug==true)ret.debug.total_rows=cursor.length;
+				ret.meta={};
+				ret.meta={total_rows:cursor.length};
 				return ret;
 				break;
 			case"remove":
-				var val=caching.Find(K);
+				var cursor=caching.Find(K);
 				if(typeof(options.id)!="number")throw("ETID");
 				if(options.id<0)throw("EVID");
-				if(options.id>val.length)throw("EVID");
+				if(options.id>cursor.length)throw("EVID");
 				try{
 					//val[options.id].Remove();
 					//val[options.id].Remove();
@@ -84,6 +113,7 @@ define(["module"],function(module){
 			default:
 				return{"error":"invalid action"};
 				break;
-		}
+		};
 	};
+	module.exports=api;
 });

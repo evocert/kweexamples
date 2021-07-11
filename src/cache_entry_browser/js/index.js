@@ -2,12 +2,12 @@
 	var container=$("#output").addClass("output");
 	var div_controls=$("<div/>").addClass("controls");
 	var div_results=$("<div/>").addClass("results");
-	var log=$("<pre/>").addClass("log");;
+	var div_status=$("<pre/>").addClass("status");;
 	var tbl_results=$("<table/>").addClass("results");
 	container.append(div_controls);
 	div_results.append(tbl_results);
 	container.append(div_results);
-	container.append(log);
+	container.append(div_status);
 	var div_style=$("<style/>").text(`
 body{
 	background:#111111;
@@ -69,15 +69,23 @@ body{
 	});
 	var limit=25;
 	var offset=0;
+
+	var div_pagination=$("<div/>").css({"float":"right"});
 	var button_next=$("<button/>").text(">").click(function(a){
 		offset+=limit;
 		render(limit,offset,input_search.val());
 	});
+	var label_pagination=$("<label/>").text("...");
+
 	var button_previous=$("<button/>").text("<").click(function(a){
 		offset-=limit;
 		offset=offset<0?0:offset;
 		render(limit,offset,input_search.val());
 	});
+
+	div_pagination.append(label_pagination);
+	div_pagination.append(button_previous);
+	div_pagination.append(button_next);
 	var sort="ASC";
 	var label_sort=$("<label/>").text("sort: ");
 	var button_sort=$("<button/>").click(function(a){
@@ -92,16 +100,42 @@ body{
 		render(limit,offset);
 		
 	});
+	var button_test=$("<button/>").text("test data").click(function(a){
+		$.ajax({
+			method:"post",
+			url:"./api/",
+			contentType:"application/json; charset=utf-8",
+			data:JSON.stringify({
+				"cmd":"log",
+				"action":"create_test_data",
+				"debug":true
+			}),
+			success:function(r){
+				update_status(r);
+				render(limit,offset);
+
+			}.bind(this),
+			error:function(e){
+				alert("ERR:"+JSON.stringify(r));
+			}.bind(this)
+		}).then(function(a){
+			resolve();
+		});
+
+	});
 	div_controls.append(label_search);
 	div_controls.append(input_search);
 	div_controls.append(button_clear);
-	div_controls.append(button_previous);
-	div_controls.append(button_next);
+	div_controls.append(div_pagination);
+
+
+
 	div_controls.append(label_sort);
 	div_controls.append(button_sort);
 	div_controls.append(label_msg);
 	div_controls.append(input_msg);
 	div_controls.append(button_msg);
+	div_controls.append(button_test);
 	function render(limit,offset,query){
 		button_sort.text(sort=="ASC"?"/\\":"\\/");
 		limit=typeof(limit)=="undefined"?25:limit;
@@ -122,6 +156,7 @@ body{
 				}),
 				success:function(r){
 					tbl_results.empty();
+					label_pagination.text((offset)+" to "+(offset+limit)+" out of "+(r.meta.total_rows));
 					r.result.forEach(function(n,i){
 						var tr_log=$("<tr/>")
 						tr_log.append($("<td/>").append($("<button/>").text("Remove").click(function(){
@@ -150,6 +185,34 @@ body{
 						tr_log.append($("<td/>").text(n.ts));
 						tr_log.append($("<td/>").text(n.msg));
 						tbl_results.append(tr_log);
+if(typeof(query)!="undefined"&&query.length>0){
+	var kw=query;
+	$("td:nth-child(3)").each(function(e){
+		var txt=$(this).text();
+		var txtbuf=txt.split(kw);
+		var spanbuf=[];
+		txtbuf.forEach(function(t,tidx){
+			spanbuf.push($("<span/>").text(t));
+			if(tidx<txtbuf.length-1)spanbuf.push($("<span/>").css({"background-color":"#666666","color":"#FFFFFF","border-radius":"2px"}).text(kw));
+		}.bind(this))
+			$(this).empty();
+			$(this).append(spanbuf);
+
+	});
+	$("td:nth-child(2)").each(function(e){	
+		var txt=$(this).text();
+		var txtbuf=txt.split(kw);
+		var spanbuf=[];
+		txtbuf.forEach(function(t,tidx){
+			spanbuf.push($("<span/>").text(t));
+			if(tidx<txtbuf.length-1)spanbuf.push($("<span/>").css({"background-color":"#666666","color":"#FFFFFF","border-radius":"2px"}).text(kw));
+		}.bind(this))
+			$(this).empty();
+			$(this).append(spanbuf);
+
+	})
+
+}
 					}.bind(this));
 					//log.text(JSON.stringify(r,0,2))
 				}.bind(this),
@@ -162,6 +225,7 @@ body{
 		});
 	}
 	function clear(){
+		var t0=new Date();
 		$.ajax({
 			method:"post",
 			url:"./api/",
@@ -171,6 +235,7 @@ body{
 				"action":"clear"
 			}),
 			success:function(r){
+				update_status("Executed in "+(new Date()-t0)+" ms");
 				render();
 			}.bind(this),
 			error:function(e){
@@ -183,6 +248,7 @@ body{
 
 	function add_log(msg){
 		if(typeof(msg)=="undefined"||msg.length==0)throw("EMSG");
+		var t0=new Date();
 		$.ajax({
 			method:"post",
 			url:"./api/",
@@ -195,6 +261,7 @@ body{
 			}),
 			success:function(r){
 				offset=0;
+				update_status("Executed in "+(new Date()-t0)+" ms");
 				render(limit,offset);
 			}.bind(this),
 			error:function(e){
@@ -202,6 +269,9 @@ body{
 			}.bind(this)
 		}).then(function(a){
 		});
+	}
+	function update_status(){
+		div_status.text(JSON.stringify(arguments));
 	}
 	render(limit,offset);
 	input_search.focus();
