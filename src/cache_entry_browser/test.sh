@@ -2,7 +2,6 @@
 PROTOCOL=http
 HOST=localhost
 PORT=8081
-ENDPOINT=/kweexamples/src/log/api/
 URL=$PROTOCOL://$HOST:$PORT$ENDPOINT
 #clear
 curl -X POST -H "Content-Type: application/json" --data '{"cmd":"log","action":"clear"}' "$URL" --output -
