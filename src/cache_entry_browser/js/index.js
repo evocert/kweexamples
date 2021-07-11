@@ -26,7 +26,7 @@ body{
 	color:#EEEEEE;
 	border:unset;
 }
-.output .controls button{
+.output button{
 	background:#555555;
 	color:#EEEEEE;
 	border:unset;
@@ -124,8 +124,6 @@ body{
 					tbl_results.empty();
 					r.result.forEach(function(n,i){
 						var tr_log=$("<tr/>")
-						tr_log.append($("<td/>").text(n.ts));
-						tr_log.append($("<td/>").text(n.msg));
 						tr_log.append($("<td/>").append($("<button/>").text("Remove").click(function(){
 							$.ajax({
 								method:"post",
@@ -138,6 +136,7 @@ body{
 									"debug":true
 								}),
 								success:function(r){
+									alert(JSON.stringify(r));
 									console.log(r);
 									render(limit,offset);
 								}.bind(this),
@@ -147,6 +146,9 @@ body{
 							}).then(function(a){
 							});
 						})));
+
+						tr_log.append($("<td/>").text(n.ts));
+						tr_log.append($("<td/>").text(n.msg));
 						tbl_results.append(tr_log);
 					}.bind(this));
 					//log.text(JSON.stringify(r,0,2))
