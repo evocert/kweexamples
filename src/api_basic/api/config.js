@@ -1,0 +1,15 @@
+define(["module"],function(module){
+	module.exports={
+		enabled:true,
+		cmdpath:"./cmd/",
+		preprocessor:[
+			"./middleware/pre0.js",
+			"./middleware/pre1.js"
+		],
+		postprocessor:[
+			"./middleware/post0.js",
+			"./middleware/post1.js"
+		],
+		debug:true
+	}
+});
