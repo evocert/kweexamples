@@ -1,29 +1,23 @@
 <@
+/* todo: https://stackoverflow.com/questions/48788722/json-to-xml-using-javascript#
+         check specific parameter and force return to xml using the above 
+         if specified
+*/
+
 require([
 	"module",
 	"./lib/request.js",
+	"./lib/xml2json.js",
 ],function(
 	module,
-	r
+	r,
+	xml2json
 ){
-	console.Log(JSON.stringify(r,0,2));
+	var t0=new Date();
 	//--------------------------------------------------------------------------------
 	//internal api cmds here
 	//--------------------------------------------------------------------------------
-	var cmd={
-		help:function(options){
-			request.ResponseHeader().Set("Content-Type","application/json");
-			print(JSON.stringify({"commands":Object.keys(this)}));
-		},
-		add:function(options){
-			request.ResponseHeader().Set("Content-Type","application/json");
-			print(JSON.stringify({"val":options.a+options.b}));
-		},
-		sub:function(options){
-			request.ResponseHeader().Set("Content-Type","application/json");
-			print(JSON.stringify({"val":options.a-options.b}));
-		}
-	}
+	var cmd={}
 	//--------------------------------------------------------------------------------
 	var options={};
 	Object.keys(r.parameters).filter(function(k,v){
@@ -32,16 +26,15 @@ require([
 		options[k]=r.parameters[k];
 	});
 	try{
+		var ret=null;
 		if(typeof(r.parameters.cmd)=="undefined"||r.parameters.cmd==null){
 			throw("ECMD");
 		}
 		if(typeof(cmd[r.parameters.cmd])=="function"){
 			try{
-
-				cmd[r.parameters.cmd](options);
+				ret=cmd[r.parameters.cmd](options);
 			}catch(e){
-				request.ResponseHeader().Set("Content-Type","application/json");
-				print(JSON.stringify({"error":e.toString()}));
+				ret={"error":e.toString()};
 			}
 		}else{
 			//--------------------------------------------------------------------------------
@@ -49,20 +42,38 @@ require([
 			//--------------------------------------------------------------------------------
 			require(["./cmd/"+r.parameters.cmd],function(cb){
 				if(typeof(cb)=="function"){
-					cb(options);
+					ret=cb(options);
 				}else{
-					request.ResponseHeader().Set("Content-Type","application/json");
-					print(JSON.stringify({"error":"EMOD"}));
+					ret={"error":"EMOD"};
 				}
 			},function(e){
-				//request.ResponseHeader().Set("Content-Type","application/json");
-				//print(JSON.stringify({"error":e.toString()}));
-				//return;
+				ret={"error":e.toString()};
 			});
 		}
+		if(ret!=null){
+			switch(typeof(ret)){
+				case"number":
+				case"string":
+					request.ResponseHeader().Set("Content-Type","text/plain");
+					print(ret);
+					break;
+				case"object":
+					var outfmt=r.parameters["outfmt"];
+					if(outfmt=="xml"){
+						request.ResponseHeader().Set("Content-Type","application/xml");
+						print(xml2json(ret));
+					}else{
+						request.ResponseHeader().Set("Content-Type","application/json");
+						print(JSON.stringify(ret,0,2));
+					}
+					break;
+			}
+		}
+
 	}catch(e){
 		request.ResponseHeader().Set("Content-Type","application/json");
 		print(JSON.stringify({"error":e.toString()}));
 	}
+	var t1=new Date();
 });
 @>
