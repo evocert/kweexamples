@@ -24,10 +24,12 @@ Command files may respond directly or return a value. If the value is not of typ
 
 * `enabled` can be used to enable or disable the api
 * `cmdpath` specifies the path prefix to add to commands
-* `preprocessor` specifies a path or paths to modules to be executed prior to command  module execution. Parameters populated include the parameters passed in the api invocation. Return value is ignored. Throwing an exception will halt normal execution of the api call up to that point.
-* `postprocessor` specifies a path or paths to modules to be executed after command module execution. Parameters populated include the parameters passed in the api invocation as well as the return value of the command module call. Throwing an exception will halt normal execution of the api call up to that point.
+* `preprocessor` specifies a path or paths to modules to be executed prior to command  module execution. Parameters populated include the parameters passed in the api invocation. Returning `false` explicitly will result in normal execution of the api after that point to stop. Throwing an exception will halt normal execution and result in the main error handling of `./api/index.js` to be executed.
+* `postprocessor` specifies a path or paths to modules to be executed after command module execution. Parameters populated include the parameters passed in the api invocation as well as the return value of the command module call. Returning `false` explicitly will result in normal execution of the api after that point to stop. Throwing an exception will halt normal execution and result in the main error handling of `./api/index.js` to be executed.
 
 Other key value pairs may be populated in `./api/config.js` and can be used in a custom fashion in the `preprocessor`, `command`, and `postprocessor` modules.
+
+Example usages of `preprocessor` and `postprocessor` modules include logging, decryption, encryption, redirection, etc.
 
 A test script `./test.sh` is provided illustrating basic endpoint invocation.
 
