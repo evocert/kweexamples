@@ -1,49 +1,44 @@
 <@
-/* todo: pre and post processors */
-
 require([
 	"module",
 	"./config.js",
 	"./lib/request.js",
-	"./lib/xml2json.js"
+	"./lib/xml2json.js",
 ],function(
 	module,
 	config,
 	r,
-	xml2json
+	xml2json,
 ){
 	if(config.enabled==false)return;
 	var t0=new Date();
-	//--------------------------------------------------------------------------------
-	//internal api cmds here
-	//--------------------------------------------------------------------------------
-	var cmd={}
-	//--------------------------------------------------------------------------------
+	var cmd={};//buildins
 	var options={};
-	console.Log(config.preprocessor);
-	//--------------------------------------------------------------------------------
-	//middleware:preprocessors
-	//--------------------------------------------------------------------------------
-	{
-		var preprocret=true;
-		config.preprocessor=typeof(config.preprocessor)=="string"?[config.preprocessor]:config.preprocessor;
-		config.preprocessor.forEach(function(path){
-			try{
-				require([path],function(cb){
-					preprocret=preprocret&&(cb(r.parameters)!=false);
-				}.bind(this));
-			}catch(e){throw(e)}
-		}.bind(this));
-		if(!preprocret)return;
-	}
-	//--------------------------------------------------------------------------------
-	Object.keys(r.parameters).filter(function(k,v){
-		return k!="cmd";
-	}).forEach(function(k){
-		options[k]=r.parameters[k];
-	});
+	var ret=null;
+		//--------------------------------------------------------------------------------
+		Object.keys(r.parameters).filter(function(k,v){
+			return k!="cmd";
+		}).forEach(function(k){
+			options[k]=r.parameters[k];
+		});
+
+
 	try{
-		var ret=null;
+		//--------------------------------------------------------------------------------
+		//middleware:preprocessors
+		//--------------------------------------------------------------------------------
+		{
+			var preprocret=true;
+			config.preprocessor=typeof(config.preprocessor)=="string"?[config.preprocessor]:config.preprocessor;
+			config.preprocessor.forEach(function(path){
+				try{
+					require([path],function(cb){
+						preprocret=preprocret&&(cb(r.parameters)!=false);
+					}.bind(this));
+				}catch(e){throw(e)}
+			}.bind(this));
+			if(!preprocret)return;
+		}
 		if(typeof(r.parameters.cmd)=="undefined"||r.parameters.cmd==null){
 			throw("ECMD");
 		}
@@ -54,9 +49,7 @@ require([
 				ret={"error":e.toString()};
 			}
 		}else{
-			//--------------------------------------------------------------------------------
 			//api cmds from ./cmd
-			//--------------------------------------------------------------------------------
 			require([config.cmdpath+r.parameters.cmd],function(cb){
 				if(typeof(cb)=="function"){
 					ret=cb(options);
@@ -68,7 +61,7 @@ require([
 			});
 		}
 		//--------------------------------------------------------------------------------
-		//middleware:preprocessors
+		//middleware:postprocessors
 		//--------------------------------------------------------------------------------
 		{
 			var postprocret=true;
@@ -82,33 +75,30 @@ require([
 			}.bind(this));
 			if(!postprocret)return;
 		}
-		//--------------------------------------------------------------------------------
-		//hdl ret
-		//--------------------------------------------------------------------------------
-		if(ret!=null){
-			switch(typeof(ret)){
-				case"number":
-				case"string":
-					request.ResponseHeader().Set("Content-Type","text/plain");
-					print(ret);
-					break;
-				case"object":
-					var outfmt=r.parameters["outfmt"];
-					if(outfmt=="xml"){
-						request.ResponseHeader().Set("Content-Type","application/xml");
-						print(xml2json(ret));
-					}else{
-						request.ResponseHeader().Set("Content-Type","application/json");
-						print(JSON.stringify(ret,0,2));
-					}
-					break;
-			}
-		}
-
 	}catch(e){
-		request.ResponseHeader().Set("Content-Type","application/json");
-		print(JSON.stringify({"error":e.toString()}));
+		ret={"error":e.toString()};
 	}
-	var t1=new Date();
+	//--------------------------------------------------------------------------------
+	//hdl ret
+	//--------------------------------------------------------------------------------
+	if(ret!=null){
+		switch(typeof(ret)){
+			case"number":
+			case"string":
+				request.ResponseHeader().Set("Content-Type","text/plain");
+				print(ret);
+				break;
+			case"object":
+				var outfmt=r.parameters["outfmt"];
+				if(outfmt=="xml"){
+					request.ResponseHeader().Set("Content-Type","application/xml");
+					print(xml2json(ret));
+				}else{
+					request.ResponseHeader().Set("Content-Type","application/json");
+					print(JSON.stringify(ret,0,2));
+				}
+				break;
+		}
+	}
 });
 @>
