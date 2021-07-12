@@ -3,10 +3,10 @@ Demonstration of creating a basic API using the KWE server.
 Sample usage:
 
 ```
-http://localhost:8081/kweexamples/api_basic/api/?cmd=add&a=4&b=2
-http://localhost:8081/kweexamples/api_basic/api/?cmd=sub&a=4&b=2
-http://localhost:8081/kweexamples/api_basic/api/?cmd=mul&a=4&b=2
-http://localhost:8081/kweexamples/api_basic/api/?cmd=div&a=4&b=2
+http://localhost:8081/kweexamples/src/api_basic/api/?cmd=add&a=4&b=2
+http://localhost:8081/kweexamples/src/api_basic/api/?cmd=sub&a=4&b=2
+http://localhost:8081/kweexamples/src/api_basic/api/?cmd=mul&a=4&b=2
+http://localhost:8081/kweexamples/src/api_basic/api/?cmd=div&a=4&b=2
 ```
 
 `JSON` and `XML` bodies are also accepted and may be mixed with query parameters.
