@@ -17,6 +17,7 @@ define([
 			var bytes=CryptoJS.AES.decrypt(r.body,config.secret);
 			var decrypted=bytes.toString(CryptoJS.enc.Utf8);
 			r.body=decrypted;
+			//console.Log(r.body);
 			//rebuild parameters
 			var body;
 			try{
