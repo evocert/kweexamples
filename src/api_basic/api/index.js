@@ -1,8 +1,5 @@
 <@
-/* todo: https://stackoverflow.com/questions/48788722/json-to-xml-using-javascript#
-         check specific parameter and force return to xml using the above 
-         if specified
-*/
+/* todo: pre and post processors */
 
 require([
 	"module",

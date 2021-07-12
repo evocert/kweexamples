@@ -20,6 +20,15 @@ an attempt is made to load in the command from `./api/cmd`
 
 Command files may respond directly or return a value. If the value is not of type `object` it will respond with `text/plain` and the return value in the response body, otherwise `application/json` with the serialized object in the response body. If the parameter `outfmt` is set to `xml`, if the return value was an object, it will respond with `application/xml` and the object serialized as `xml` in the response body.
 
+`./api/config.js` specifies configuration settings for `./api/index.js`. 
+
+* `enabled` can be used to enable or disable the api
+* `cmdpath` specifies the path prefix to add to commands
+* `preprocessor` specifies a path or paths to modules to be executed prior to command  module execution. Parameters populated include the parameters passed in the api invocation. Return value is ignored. Throwing an exception will halt normal execution of the api call up to that point.
+* `postprocessor` specifies a path or paths to modules to be executed after command module execution. Parameters populated include the parameters passed in the api invocation as well as the return value of the command module call. Throwing an exception will halt normal execution of the api call up to that point.
+
+Other key value pairs may be populated in `./api/config.js` and can be used in a custom fashion in the `preprocessor`, `command`, and `postprocessor` modules.
+
 A test script `./test.sh` is provided illustrating basic endpoint invocation.
 
 Live example available <a href="http://skullquake.dedicated.co.za/kweexamples/src/api_basic/api/" target="_blank">here</a>
