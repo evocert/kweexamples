@@ -6,6 +6,7 @@ Basic webcrawler demonstration using `webing`. The relevant file to look at is `
 * `debug` - log to server console
 * `maxvisit` - maximum links to visit
 * `maxdepth` - maximum recursion depth
+* `handler` - optional handler path, path to AMD module `function(url,body){...}`
 
 Rudimentary xml parsing is provided via <a href="https://github.com/ershov-konst/dom-parser" target="_blank">ershov-konst/dom-parser</a>. URLs are constructed based on absolute or relative paths and normalized using `./api/lib/pathutils.js`
 

@@ -49,6 +49,9 @@ define([
 				if(typeof(options.query)=="undefined")options.query="";
 				if(typeof(options.query)=="string")options.query=options.query.toString();
 				if(options.sort!="ASC"&&options.sort!="DESC")throw("EVSORT");
+				options.trim=typeof(options.trim)!="boolean"?false:options.trim;
+				options.trimlength=typeof(options.trimlength)=="number"?options.trimlength:80;
+				if(options.trimlength<0)throw("EVTRIM");
 				var cursor=caching.Find(K);
 				var ctime=(new Date())-t0;
 				var buf=[];
@@ -80,7 +83,13 @@ define([
 							if(result[k].toString().indexOf(options.query)>=0)relevant=true;
 						}.bind(this));
 					}
-					if(relevant){buf.push(result);nres++;}
+					if(relevant){
+						if(options.trim==true)Object.keys(result).forEach(function(k){//trim
+							if(typeof(result[k])=="string"&&result[k].length>options.trimlength)result[k]=result[k].substring(0,options.trimlength);
+						}.bind(this));
+						buf.push(result);
+						nres++;
+					}
 
 				}
 				var ret={result:buf};

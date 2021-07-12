@@ -9,6 +9,7 @@
 	container.append(div_results);
 	container.append(div_status);
 	var div_style=$("<style/>").text(`
+
 body{
 	background:#111111;
 	color:#888888;
@@ -40,6 +41,43 @@ body{
 	color:#EEEEEE;
 	background:#333333;
 }
+.output table{
+	width:100%;
+}
+.output tr{
+overflow:hidden;
+width:100%;
+	display:flex;
+}
+.output tr:nth-child(odd){
+	background:#333333;
+}
+.output tr:nth-child(even){
+	background:#222222;;
+}
+.output td{
+	padding:0px;
+	margin:0px;
+	border:unset;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical; 	
+	overflow:hidden;
+}	
+.output td:nth-child(1){
+	width:10%;
+}
+.output td:nth-child(2){
+	width:10%;
+}
+.output td:nth-child(3){
+	width:80%;
+}
+.output td span.highlighted{
+	background:#880000;
+	color:#FF8888;
+}
+
 	`);
 	container.append(div_style);
 
@@ -152,7 +190,9 @@ body{
 					"offset":offset,
 					"limit":limit,
 					"query":query,
-					"debug":true
+					"trim":true,
+					"trimlength":80,
+					"debug":true,
 				}),
 				success:function(r){
 					tbl_results.empty();
@@ -193,7 +233,7 @@ if(typeof(query)!="undefined"&&query.length>0){
 		var spanbuf=[];
 		txtbuf.forEach(function(t,tidx){
 			spanbuf.push($("<span/>").text(t));
-			if(tidx<txtbuf.length-1)spanbuf.push($("<span/>").css({"background-color":"#666666","color":"#FFFFFF","border-radius":"2px"}).text(kw));
+			if(tidx<txtbuf.length-1)spanbuf.push($("<span/>").addClass("highlighted").text(kw));
 		}.bind(this))
 			$(this).empty();
 			$(this).append(spanbuf);

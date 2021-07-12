@@ -15,6 +15,8 @@ define([
 			if(typeof(options.maxdepth)!="number")options.maxdepth=Infinity;
 			if(typeof(options.maxvisit)!="number")options.maxvisit=Infinity;
 			if(typeof(options.recursive)!="boolean")options.recursive=false;
+			if(typeof(options.handler)!="string")options.handler=null;
+			if(typeof(options.delay)!="number")options.delay=0;
 			ridx=0;
 			maxr=options.maxvisit;
 			maxdepth=options.maxdepth;
@@ -25,6 +27,7 @@ define([
 					var links={};
 					if(options.debug==true)console.Log("-".repeat(80));
 					function build(base,url,depth){
+						//if(options.delay>0)sleep(options.delay);
 						if(ridx>maxr)return;
 						if(depth>maxdepth)return;
 						depth=typeof(depth)=="number"?depth:0;
@@ -43,6 +46,11 @@ define([
 									if(typeof(contentType)=="string"&&contentType.indexOf("text/html")==0){
 										var body=response.Reader().ReadAll();
 										response.Reader().Close();
+										if(options.handler!=null){
+											require([options.handler],function(handler){
+												handler(absolute(base,url),body);
+											});
+										}
 										try{
 											var parser=new DomParser();
 											var dom=parser.parseFromString(body);
