@@ -9,12 +9,66 @@ http://localhost:8081/kweexamples/src/api_basic/api/?cmd=mul&a=4&b=2
 http://localhost:8081/kweexamples/src/api_basic/api/?cmd=div&a=4&b=2
 ```
 
-`JSON` and `XML` bodies are also accepted and may be mixed with query parameters.
+`JSON` and `XML` bodies are also accepted and may be mixed with query parameters. Sample `JSON` payloads:
 
+```
+{
+	"cmd":"add",
+	"a":4,
+	"b":2
+}
+```
+
+```
+{
+	"cmd":"sub",
+	"a":2,
+	"b":4
+}
+```
+
+JSON bodies may also specify multiple commands to execute, e.g.
+
+```
+{
+	"cmd":[
+		{
+			"cmd":"add",
+			"a":4,
+			"b":2
+		},
+		{
+			"cmd":"sub",
+			"a":4,
+			"b":2
+		}
+	]
+}
+```
+
+A sample `XML` payload:
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<api>
+	<cmd>add</cmd>
+	<a>4</a>
+	<b>2</b>
+</api>
+```
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<api>
+	<cmd>sub</cmd>
+	<a>2</a>
+	<b>4</b>
+</api>
+```
 
 Rudimentary xml parsing is provided via <a href="https://github.com/ershov-konst/dom-parser" target="_blank">ershov-konst/dom-parser</a>.
 
-The main entry point is `./api/index.js`. `cmd` contains builtin api commands. If the api command requested is not found in `cmd, an attempt is made to load it from `./api/cmd`.
+The main entry point is `./api/index.js`. `cmd` contains builtin api commands. If the api command or commands requested is not found in `cmd, an attempt is made to load it from `./api/cmd`.
 
 Command files may respond directly or return a value. If the value is not of type `object` it will respond with `text/plain` and the return value in the response body, otherwise `application/json` with the serialized object in the response body. If the parameter `outfmt` is set to `xml`, if the return value was an object, it will respond with `application/xml` and the object serialized as `xml` in the response body.
 
