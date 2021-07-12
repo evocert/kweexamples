@@ -68,7 +68,7 @@ A sample `XML` payload:
 
 Rudimentary xml parsing is provided via <a href="https://github.com/ershov-konst/dom-parser" target="_blank">ershov-konst/dom-parser</a>.
 
-The main entry point is `./api/index.js`. `cmd` contains builtin api commands. If the api command or commands requested is not found in `cmd, an attempt is made to load it from `./api/cmd`.
+The main entry point is `./api/index.js`. `cmd` contains builtin api commands. If the api command or commands requested is not found in `cmd`, an attempt is made to load it from `./api/cmd`.
 
 Command files may respond directly or return a value. If the value is not of type `object` it will respond with `text/plain` and the return value in the response body, otherwise `application/json` with the serialized object in the response body. If the parameter `outfmt` is set to `xml`, if the return value was an object, it will respond with `application/xml` and the object serialized as `xml` in the response body.
 
