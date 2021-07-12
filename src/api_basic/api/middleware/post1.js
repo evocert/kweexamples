@@ -1,8 +1,10 @@
 define(["module"],function(module){
-	module.exports=function(){
+	module.exports=function(parameters,ret){
 		console.Log(module.id+":start");
 		console.Log(JSON.stringify(arguments));
 		console.Log(module.id+":end");
-		return true;//false;
+		if(parameters.cmd=="add")
+			ret.val="modified by "+module.id;
+		return true;
 	}
 });
