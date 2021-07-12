@@ -46,6 +46,23 @@ JSON bodies may also specify multiple commands to execute, e.g.
 }
 ```
 
+If key `pipe` has its value set to `true`, outputs from previous commands will be used as inputs to consective commands. Only the first command will have its arguments applied. The output of the final command will be used in the response. The following serves as illustration:
+
+```
+{
+	"cmd":[
+		{"cmd":"add","a":4,"b":2},
+		{"cmd":"log"},
+		{"cmd":"neg"},
+		{"cmd":"log"},
+		{"cmd":"exp"},
+		{"cmd":"log"},
+		{"cmd":"abs"}
+	],
+	"pipe":true
+}
+```
+
 A sample `XML` payload:
 
 ```

@@ -64,10 +64,15 @@ require([
 			cmdbuf.push({cmd:r.parameters.cmd,options:options});
 		}
 		var retbuf=[];
-		cmdbuf.forEach(function(cmdobj){
+		cmdbuf.forEach(function(cmdobj,cmdidx){
 			if(typeof(cmd[cmdobj.cmd])=="function"){
 				try{
-					retbuf.push(cmd[cmdobj.cmd](cmdobj.options));
+					if(r.parameters.pipe==true){
+						retbuf.push(cmd[cmdobj.cmd](cmdidx==0?cmdobj.options:retbuf[0]));
+						retbuf=[retbuf[0]];
+					}else{
+						retbuf.push(cmd[cmdobj.cmd](cmdobj.options));
+					}
 				}catch(e){
 					retbuf.push({"error":e.toString()});
 				}
@@ -75,7 +80,12 @@ require([
 				//api cmds from ./cmd
 				require([config.cmdpath+cmdobj.cmd],function(cb){
 					if(typeof(cb)=="function"){
-						retbuf.push(cb(cmdobj.options));
+						if(r.parameters.pipe==true){
+							retbuf.push(cb(cmdidx==0?cmdobj.options:retbuf[0]));
+							retbuf=[retbuf[0]];
+						}else{
+							retbuf.push(cb(cmdobj.options));
+						}
 					}else{
 						retbuf.push({"error":"EMOD"});
 					}
