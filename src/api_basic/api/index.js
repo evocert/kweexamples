@@ -15,13 +15,7 @@ require([
 	var cmd={};//buildins
 	var options={};
 	var ret=null;
-		//--------------------------------------------------------------------------------
-		Object.keys(r.parameters).filter(function(k,v){
-			return k!="cmd";
-		}).forEach(function(k){
-			options[k]=r.parameters[k];
-		});
-
+	//--------------------------------------------------------------------------------
 
 	try{
 		//--------------------------------------------------------------------------------
@@ -30,11 +24,18 @@ require([
 		{
 			var preprocret=true;
 			config.preprocessor=typeof(config.preprocessor)=="string"?[config.preprocessor]:config.preprocessor;
-			config.preprocessor.forEach(function(path){
+			config.preprocessor.forEach(function(mod){
 				try{
-					require([path],function(cb){
-						preprocret=preprocret&&(cb(r.parameters)!=false);
-					}.bind(this));
+					switch(typeof(mod)){
+						case"string":
+							require([mod],function(cb){
+								preprocret=preprocret&&(cb(r.parameters)!=false);
+							}.bind(this));
+							break;
+						case"function":
+							preprocret=preprocret&&(mod(r.parameters)!=false);
+							break;
+					}
 				}catch(e){throw(e)}
 			}.bind(this));
 			if(!preprocret)return;
@@ -42,6 +43,11 @@ require([
 		if(typeof(r.parameters.cmd)=="undefined"||r.parameters.cmd==null){
 			throw("ECMD");
 		}
+		Object.keys(r.parameters).filter(function(k,v){
+			return k!="cmd";
+		}).forEach(function(k){
+			options[k]=r.parameters[k];
+		});
 		if(typeof(cmd[r.parameters.cmd])=="function"){
 			try{
 				ret=cmd[r.parameters.cmd](options);
@@ -66,12 +72,21 @@ require([
 		{
 			var postprocret=true;
 			config.postprocessor=typeof(config.postprocessor)=="string"?[config.postprocessor]:config.postprocessor;
-			config.postprocessor.forEach(function(path){
+			config.postprocessor.forEach(function(mod){
+				var retref={val:ret}
 				try{
-					require([path],function(cb){
-						postprocret=postprocret&&(cb(r.parameters,ret)!=false);
-					}.bind(this));
+					switch(typeof(mod)){
+						case"string":
+							require([mod],function(cb){
+								postprocret=postprocret&&(cb(r.parameters,retref)!=false);
+							}.bind(this));
+							break;
+						case"function":
+							postprocret=postprocret&&(mod(r.parameters,retref)!=false);
+							break;
+					}
 				}catch(e){throw(e)}
+				ret=retref.val;
 			}.bind(this));
 			if(!postprocret)return;
 		}

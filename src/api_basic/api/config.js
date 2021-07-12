@@ -1,15 +1,28 @@
 define(["module"],function(module){
 	module.exports={
+		//main config settings
 		enabled:true,
 		cmdpath:"./cmd/",
 		preprocessor:[
-			"./middleware/pre0.js",
-			"./middleware/pre1.js"
+			"./mw/pre_decryptor.js",	//amd module preprocessors
+			"./mw/pre0.js",			//...
+			"./mw/pre1.js",			//...
+			function(){},			//inline preprocessor
+			function(){},			//...
+			function(){},			//...
+			function(){}			//...
 		],
 		postprocessor:[
-			"./middleware/post0.js",
-			"./middleware/post1.js"
+			"./mw/post0.js",		//amd module postprocessors
+			"./mw/post1.js",		//...
+			"./mw/post_encryptor.js",	//...
+			function(){},			//inline postprocessor
+			function(){},			//...
+			function(){},			//...
+			function(){}			//...
 		],
-		debug:true
+		//extra config settings
+		debug:true,
+		secret:"secret123"
 	}
 });

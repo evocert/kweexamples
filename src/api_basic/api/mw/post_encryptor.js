@@ -1,0 +1,19 @@
+define([
+	"module",
+	"lib/cryptojs/3.1.9/crypto-js.js",
+	"config.js"
+],function(
+	module,
+	CryptoJS,
+	config
+){
+	module.exports=function(parameters,ret){
+		//console.Log(module.id+":start");
+		//console.Log(JSON.stringify(arguments));
+		if(parameters.encrypt==true){
+			var ct=CryptoJS.AES.encrypt(JSON.stringify(ret.val),config.secret).toString();
+			ret.val=ct;
+		}
+		//console.Log(module.id+":end");
+	}
+});
