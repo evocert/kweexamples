@@ -1,0 +1,19 @@
+<@
+	function build(obj,max,idx){
+		if(typeof(obj)=="undefined")throw("obj null");
+		if(typeof(max)=="undefined")throw("max null");
+		if(typeof(idx)=="undefined")idx=0;
+		if(idx>max)return;
+		var nchildren=Math.floor(Math.random()*2+((max-idx)/max));
+		for(var i=0;i<nchildren;i++){
+			var child={"name":idx.toString(),"children":[]};
+			obj.children.push(child);
+			build(child,max,idx+1);
+		}
+		return obj;
+	}
+	var root={"name":"root","children":[]};
+	build(root,15);
+	println(JSON.stringify(root));
+@>
+
