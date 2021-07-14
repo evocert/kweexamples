@@ -1,19 +1,39 @@
-.node {
-	cursor: pointer;
+html,body{
+	margin:unset;
+	padding:unset;
+	overflow:hidden;
 }
-.node circle {
-	fill: #fff;
-	stroke: steelblue;
-	stroke-width: 3px;
+.node{
+    cursor: pointer;
 }
-.node text {
-	font: 12px sans-serif;
+.overlay{
+	background-color:#222222;
 }
-.link {
-	fill: none;
-	stroke: #ccc;
-	stroke-width: 2px;
+.node circle{
+	stroke:#FFFFFF;
+	stroke-width:1.5px;
+	fill:#888888!important;
 }
-svg{
-	overflow:visible;
+.node text{
+	font-size:10px; 
+	font-family:sans-serif;
+	fill:#FFFFFF;
 }
+.link{
+	fill:none;
+	stroke:#ccc;
+	stroke-width:1.5px;
+}
+.templink{
+	fill:none;
+	stroke:red;
+	stroke-width:3px;
+}
+.ghostCircle.show{
+	display:block;
+}
+.ghostCircle, .activeDrag .ghostCircle{
+	 display:none;
+}
+
+

@@ -1,36 +1,7 @@
+This example illustrates using `D3` client side to render a treeview using data generated on the server.
+
 ```
-{
-	"0000":{
-		/-- mandatory
-		name:"foo",
-		/-- optional
-		description:"foos description",
-		/-- optional
-		value:42,
-		/-- optional
-		properties:{
-			"k0":"hello foo",
-			"k1":"hello foo 2",
-			...
-		}
-		value:42,
-		children:{
-			"0001":{/-- child instance
-				name:"bar",
-				description:"bars description",
-				value:24,
-				properties:{
-					"k0":"hello bar",
-					"k1":"hello bar 2",
-					...
-				}
-				children:{
-					"0002":["0000"],/-- reference
-					"0003":["0000","0001"],/-- reference
-				}
-			},
-			...
-		}
-	},
-}
+https://stackoverflow.com/questions/20853485/d3-js-collapsible-tree-how-to-connect-different-parents-with-same-child
+http://bl.ocks.org/mbostock/4339083
+http://bl.ocks.org/mbostock/1093130
 ```

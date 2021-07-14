@@ -549,7 +549,6 @@ function draw(){
 	    // Layout the tree initially and center on the root node.
 	    update(root);
 	    centerNode(root);
-	window.setTimeout(draw,1000);
 	}
 );
 }
