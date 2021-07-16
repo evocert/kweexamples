@@ -1,0 +1,13 @@
+requirejs.config({
+	"waitSeconds":0,
+	"baseUrl":"./js",
+	"paths":{
+	},
+	"packages":[],
+	"config":{
+	},
+	"map":{},
+	"shim":{
+	},
+	"deps":[]
+});
