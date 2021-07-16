@@ -1,6 +1,6 @@
 define([
 	"module",
-        "./domparser/DomParser.js"
+        "../domparser/DomParser.js"
 ],function(
 	module,
         DomParser

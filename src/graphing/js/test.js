@@ -1,3 +1,3 @@
 define(["module"],function(module){
-	module.exports=function(){alert("test");};
+	module.exports=function(){return 42;};
 });

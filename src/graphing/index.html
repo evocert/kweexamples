@@ -3,15 +3,23 @@
 	<head>
 		<meta charset="utf-8">
 		<link rel="stylesheet" href="./css/style.css"></link>
-		<!--
-		<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-		<script src="https://d3js.org/d3.v3.min.js"></script>
-		<script src="./js/index.js"></script>
-		-->
-		<script data-main="./js/index.js" src="/require.js"></script>
+		<style>*{background:#000000;color:#00FF00;}</style>
+		<script src="/require.js"></script>
 		<script src="./js/require.conf.js"></script>
 	</head>
 	<body>
-		<div id="tree-container"></div>
+		<script>
+			require([
+				"module",
+				"./api/lib/kwe/tree.js"
+			],function(
+				module,
+				Tree
+			){
+				var t=new Tree.Tree();
+				t.test();
+			});
+		</script>
 	</body>
 </html>
+

@@ -2,13 +2,13 @@
 require([
 	"module",
 	"./config.js",
-	"./lib/request.js",
-	"./lib/xml2json.js",
+	"./lib/kwe/request.js",
+	"./lib/kwe/xml2json.js",
 ],function(
 	module,
 	config,
 	r,
-	xml2json,
+	xml2json
 ){
 	if(config.enabled==false)return;
 	var t0=new Date();
@@ -16,7 +16,6 @@ require([
 	var options={};
 	var ret=null;
 	//--------------------------------------------------------------------------------
-
 	try{
 		//--------------------------------------------------------------------------------
 		//middleware:preprocessors
