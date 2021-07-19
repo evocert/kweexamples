@@ -1,14 +1,29 @@
 <@
+require=undefined;
+requirejs=undefined;
+define=undefined;
+if(caching.Find("requirejs")==null){
+	caching.Put("requirejs",_scriptinclude("./lib/requirejs/require.js"));
+}
+eval(caching.Find("requirejs"));
+requirejs.config({
+	kwe:{
+		caching:{
+			enabled:false,
+			key:"rjs",
+		}
+	}
+});
+//console.Log(caching.Find("rjs").String());
+//try{_parseEval.call(fsutilcode);}catch(e){console.Error(e.toString());};
 require([
 	"module",
 	"./config.js",
-	"./lib/kwe/request.js",
-	"./lib/kwe/xml2json.js",
+	"./lib/kwe/request.js"
 ],function(
 	module,
 	config,
-	r,
-	xml2json
+	r
 ){
 	if(config.enabled==false)return;
 	var t0=new Date();
@@ -161,6 +176,8 @@ require([
 			case"object":
 				var outfmt=r.parameters["outfmt"];
 				if(outfmt=="xml"){
+					var xml2json;
+					require(["./lib/kwe/xml2json.js"],function(m){xml2json=m;});
 					request.ResponseHeader().Set("Content-Type","application/xml");
 					print(xml2json(ret));
 				}else{

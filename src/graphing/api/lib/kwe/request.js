@@ -1,9 +1,7 @@
 define([
 	"module",
-        "../domparser/DomParser.js"
 ],function(
 	module,
-        DomParser
 ){
 	var parameters={}
 	request.Parameters().StandardKeys().forEach(function(k){
@@ -35,23 +33,8 @@ define([
 		}
 	}else if(headers["Content-Type"]&&headers["Content-Type"].startsWith("application/xml")){
 		try{
-			/*
-			var parser=new DomParser();
-			var dom=parser.parseFromString(request.RequestBodyS());
-			var api=dom.getElementsByTagName("api");
-			api=api.length>0?api[0]:null;
-			if(api!=null){
-				api.childNodes.forEach(function(childNode){
-					try{
-						parameters[childNode.nodeName]=eval(childNode.textContent);
-					}catch(e){
-						parameters[childNode.nodeName]=childNode.textContent;
-					}
-				});
-			}else{
-			}
-
-			*/
+			var DomParser;
+			require(["../domparser/DomParser.js"],function(m){DomParser=m;});
 			var parser=new DomParser();
 			var dom=parser.parseFromString(request.RequestBodyS());
 			var api=dom.getElementsByTagName("api");
