@@ -1,4 +1,5 @@
 <@
+/*
 require=undefined;
 requirejs=undefined;
 define=undefined;
@@ -14,6 +15,7 @@ requirejs.config({
 		}
 	}
 });
+*/
 //console.Log(caching.Find("rjs").String());
 //try{_parseEval.call(fsutilcode);}catch(e){console.Error(e.toString());};
 require([

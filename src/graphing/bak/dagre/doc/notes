@@ -1,7 +1,0 @@
-g.nodes();//all nodes
-g.edges();//all edges
-g.nodeEdges(g.nodes()[0]);//edges from node 0
-g.edges()[0].v;//edge 0 from
-g.edges()[0].w;//edge 0 to
-g.inEdges("0x00;0x00");//incoming edges to 0x00;0x00
-g.outEdges("0x00;0x00");//outgoing  edges to 0x00;0x00

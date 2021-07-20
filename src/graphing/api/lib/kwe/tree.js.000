@@ -229,25 +229,30 @@ define(["module"],function(module){
                 AbstractStorage.call(this/*,args*/);
 		options=typeof(options)=="object"?options:{};
 		this.k=typeof(options.k)=="string"?options.k:defaults.store.k;
-		this.isnew=true;
-		this.data={};
-		this.cursor=null;
+		//this.isnew=true;
+		//this.data={};
+		//this.cursor=null;
 		this.load();
 	};
 	Storage.prototype=Object.create(AbstractStorage.prototype);
 	Storage.prototype.setdata=function(data){
-		var of=new ObjectFactory();
-		this.data=of.create({data:data});
+		//var of=new ObjectFactory();
+		//this.data=of.create({data:data});
+		//this.data=data;
+		this.data=data;
 	}
 	Storage.prototype.init=function(k,v){
 		if(this.get(k)==null)this.set(k,v);
 		return this.get(k);
 	}
 	Storage.prototype.set=function(k,v){
-		this.data[k]=v;
+		throw("EABSTRACT");
 	}
 	Storage.prototype.get=function(k){
-		return this.data[k];
+		throw("EABSTRACT");
+	}
+	Storage.prototype.append=function(k,v){
+		throw("EABSTRACT");
 	}
 	Storage.prototype.isNew=function(){
 		return this.isnew;
@@ -257,10 +262,10 @@ define(["module"],function(module){
 		this.commit();
 	};
 	Storage.prototype.toString=function(){
-		return JSON.stringify(this.data);
+		throw("EABSTRACT");
 	};
 	Storage.prototype.toJson=function(){
-		return this.data;
+		return JSON.parse(this.toString());
 	};
 	//--------------------------------------------------------------------------------
 	var ClientStorage=function(){
@@ -268,6 +273,23 @@ define(["module"],function(module){
                 Storage.call(this/*,args*/);
 	};
 	ClientStorage.prototype=Object.create(Storage.prototype);
+	ClientStorage.prototype.get=function(k){
+		this.load();
+		return this.data[k];
+	}
+	ClientStorage.prototype.set=function(k,v){
+		this.data[k]=v;
+		this.commit();
+	}
+	ClientStorage.prototype.append=function(k,v){
+		if(Array.isArray(this.data[k])){
+			this.data[k].push(v);
+			this.commit();
+		}else throw("ETYPE");
+	}
+	ClientStorage.prototype.toString=function(k,v){
+		return localStorage.getItem(this.k);
+	}
 	ClientStorage.prototype.commit=function(){
 		try{
 			localStorage.setItem(this.k,JSON.stringify(this.data));
@@ -292,21 +314,42 @@ define(["module"],function(module){
                 Storage.call(this/*,args*/);
 	};
 	ServerStorage.prototype=Object.create(Storage.prototype);
-	ServerStorage.prototype.commit=function(options){
-		logger.log("COM");
-		logger.log(JSON.stringify(this.data));
-		caching.Put(this.k,JSON.parse(JSON.stringify(this.data)));//??? compare with clientstorage impl
+	ServerStorage.prototype.get=function(k){
+		caching.Reset();
+		if(caching.Find(this.k)==null){
+			this.isnew=true;
+			caching.Put(this.k,{});
+		}
+		return caching.Find(this.k,k);
+	}
+	ServerStorage.prototype.set=function(k,v){
+		caching.Reset();
+		caching.Find(this.k).Put(k,Array.isArray(v)?[v]:v);
+	}
+	ServerStorage.prototype.append=function(k,v){
+		caching.Reset();
+		caching.Find(this.k).Push(k,v);
+
+	}
+	ServerStorage.prototype.toString=function(){
+		caching.Reset();
+		return caching.Find(this.k).String();
+	};
+	ServerStorage.prototype.toJson=function(){
+		caching.Reset();
+		return JSON.parse(caching.Find(this.k).String());
 	};
 	ServerStorage.prototype.load=function(){
 		try{
+			caching.Reset();
 			if(caching.Find(this.k)==null){
 				this.isnew=true;
 				caching.Put(this.k,{});
 			}
-			var cursor=caching.Find(this.k);
-			this.setdata(JSON.parse(cursor.String()));
 		}catch(e){throw(e);}
 	}
+	ServerStorage.prototype.commit=function(options){
+	};
 	//--------------------------------------------------------------------------------
 	var AbstractNodeFactory=function(){};
 	AbstractNodeFactory.prototype.create=function(){
@@ -559,30 +602,35 @@ define(["module"],function(module){
 	Tree.prototype.test=function(){
 		//logger.log("test:start");
 		{
-			var af=new TreeFactory();
-			var a=af.g();
-			a.addChild();
+			//var af=new TreeFactory();
+			//var a=af.g();
+			//a.addChild();
 		}
 		{
 			var sf=new StorageFactory();
 			var s=sf.create();
+			/*
+			s.clear();
+			*/
 			a=s.init("a",0);
-			b=s.init("b",0);
-			c=s.init("c",0);
+			b=s.init("b",1);
+			c=s.init("c",2);
 			c=s.init("d",[]);
-			s.data.a=s.data.a+1;
-			s.data.b=s.data.a+1;
-			s.data.c=s.data.a+1;
-			if(s.data.d.length==0)s.data.d.push(0);
-			s.data.d.push(s.data.d[s.data.d.length-1]+1);
-			s.data.d=s.data.d.slice(-8);
+			s.set("a",s.get("a")+1);
+			s.set("b",s.get("b")+1);
+			s.set("c",s.get("c")+1);
+			s.append("d",42);
+			logger.log(s.get("a"));
+			logger.log(s.get("b"));
+			logger.log(s.get("c"));
+			logger.log(s.get("d"));
 			logger.log(s.toString());
-			logger.log(s.toJson());
+			//logger.log(s.toJson());
 			s.commit();
 		}
 		{
-			var nf=new NodeFactory();
-			var n=nf.create();
+			//var nf=new NodeFactory();
+			//var n=nf.create();
 			//n.get();
 			//n.set();
 		}

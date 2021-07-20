@@ -1,12 +1,11 @@
 define([
 	"module",
-	"../lib/kwe/tree.js"
+	"../lib/kwe/data.js"
 ],function(
 	module,
-	Tree
+	data
 ){
 	module.exports=function(options){
-		var t=new Tree.Tree();
-		return t.test();
+		return data.test();
 	};
 });

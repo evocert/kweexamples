@@ -8,8 +8,9 @@ ENDPOINT=/kweexamples/src/graphing/api/
 OUTFMT=json
 URL=$PROTOCOL://$HOST:$PORT$ENDPOINT
 #--------------------------------------------------------------------------------
-#bombardier  -c 4 -m POST -H "Content-Type: application/json" -b '{"cmd":"tree","outfmt":"'$OUTFMT'"}' "$URL"
-curl -X POST -H "Content-Type: application/json" --data '{"cmd":"tree","outfmt":"'$OUTFMT'"}' "$URL" --output -
+#bombardier  -c 4 -m POST -H "Content-Type: application/json" -b '{"cmd":"storage","outfmt":"'$OUTFMT'"}' "$URL"
+echo curl -X POST -H "Content-Type: application/json" --data '{"cmd":"storage","outfmt":"'$OUTFMT'"}' "$URL" --output -
+curl -X POST -H "Content-Type: application/json" --data '{"cmd":"storage","outfmt":"'$OUTFMT'"}' "$URL" --output -
 #echo query parameters:
 #curl "$URL?cmd=help&outfmt="$OUTFMT"" --output -
 #curl "$URL?cmd=add&a=4&b=2&outfmt="$OUTFMT"" --output -
