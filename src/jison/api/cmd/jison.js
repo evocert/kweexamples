@@ -20,16 +20,26 @@ define([
 			].join("\n");
 
 		}
+		options.srcpath=typeof(options.srcpath)=="string"?options.srcpath:"www/kweexamples/src/jison/api/src/calc.l";
+		options.src=typeof(options.src)=="string"?null:options.src;
 		//var out=request.fsutils().CATS("./index.js");//../src/calc.l")
 		//console.Log(request.FS().CATS("./api/index.js"));//out;
-		var src=(_fsutils.CATS("www/kweexamples/src/jison/api/src/calc.l"));
+		var src=null;
+		if(options.src!=null){
+			src=options.src;
+		}else if(options.srcpath!=null){
+			src=(_fsutils.CATS(options.srcpath));
+		}
+		options.debug=typeof(options.debug)=="boolean"?options.debug:false;
 		var parser=new Jison.Parser(src);
 		var cod=parser.generate();
 		var parserSource=parser.generate({moduleName:"test"});
 		var ret={};
-		ret.src=src;
-		ret.cod=cod;
-		ret.prg=options.prg;
+		if(options.debug){
+			ret.src=src;
+			ret.cod=cod;
+			ret.prg=options.prg;
+		}
 		ret.out=[];
 		options.prg.split("\n").forEach(function(ln){
 			try{

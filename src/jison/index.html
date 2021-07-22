@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="utf-8"></meta>
+		<title>Jison</title>
+		<script type="application/javascript" src="./js/jquery-3.6.0.min.js"></script>
+		<style>
+			.container{
+				padding:8px;
+			}
+			textarea{
+				width:100%;
+			}
+			#out{
+				white-space:pre;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<label>src</label><br/>
+			<textarea id="src" rows="8"></textarea><br/>
+			<label>prg</label><br/>
+			<textarea id="prg" rows="8"></textarea><br/>
+			<pre id="out"></pre>
+			<button id="submit">Submit</button>
+		</div>
+		<script>
+			$(document).ready(function(){
+				$.ajax({
+					method:"GET",
+					url:"./api/src/calc.l",
+					success:function(r){
+						$("#src").val(r);
+					}.bind(this),
+					error:function(e){
+						alert(JSON.stringify(r));
+					}.bind(this)
+				});
+				$.ajax({
+					method:"GET",
+					url:"./api/src/calc.prg",
+					success:function(r){
+						$("#prg").val(r.trim());
+					}.bind(this),
+					error:function(e){
+						alert(JSON.stringify(r));
+					}.bind(this)
+				});
+
+
+
+				$("#submit").click(function(){
+					$.ajax({
+						method:"POST",
+						url:"./api/",
+						headers:{
+							"Content-Type":"application/json"
+						},
+						data:JSON.stringify({
+							"cmd":"jison",
+							"debug":true,
+							"src":$("#src").val(),
+							"prg":$("#prg").val()
+						}),
+						success:function(r){
+							$("#out").text(JSON.stringify(r,0,2));
+						}.bind(this),
+						error:function(e){
+							$("#out").text(JSON.stringify(e));
+						}.bind(this)
+					}).then(function(a){}.bind(this));
+
+				});
+			});
+		</script>
+	</body>
+</html>
