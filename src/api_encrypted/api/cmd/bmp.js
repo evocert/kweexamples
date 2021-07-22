@@ -59,24 +59,24 @@ define([
 				var hexwa=CryptoJS.enc.Hex.parse(hex);
 				var ct=CryptoJS.AES.encrypt(hexwa,config.key,{mode:CryptoJS.mode.ECB,padding:CryptoJS.pad.NoPadding});
 				var ct=ct.toString();
-				request.ResponseHeader().Set("Content-Type","text/plain");
+				request.Response().SetHeader("Content-Type","text/plain");
 				var t1=new Date();
-				request.ResponseHeader().Set("X-Duration",(t1-t0)+" ms");
+				request.Response().SetHeader("X-Duration",(t1-t0)+" ms");
 				print(ct);
 			}else{
 				switch(options.fmt){
 					case"hex":
 						outbuf=bytesToHex(outbuf);
 						var t1=new Date();
-						request.ResponseHeader().Set("Content-Type","text/plain");
-						request.ResponseHeader().Set("X-Duration",(t1-t0)+" ms");
+						request.Response().SetHeader("Content-Type","text/plain");
+						request.Response().SetHeader("X-Duration",(t1-t0)+" ms");
 						binwrite(outbuf);
 						break;
 					case"bin":
 					default:
 						var t1=new Date();
-						request.ResponseHeader().Set("Content-Type","image/bmp");
-						request.ResponseHeader().Set("X-Duration",(t1-t0)+" ms");
+						request.Response().SetHeader("Content-Type","image/bmp");
+						request.Response().SetHeader("X-Duration",(t1-t0)+" ms");
 						binwrite(outbuf);
 						break;
 				}

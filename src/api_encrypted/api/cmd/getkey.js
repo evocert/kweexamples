@@ -6,7 +6,6 @@ define([
 	config
 ){
 	module.exports=function(options){
-		request.ResponseHeader().Set("Content-Type","application/json");
-		print(JSON.stringify({"key":config.key}));
+		return{key:config.key};
 	};
 });

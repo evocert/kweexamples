@@ -15,12 +15,12 @@ define([
 		var r={val:v};
 		try{
 			var ct=CryptoJS.AES.encrypt(JSON.stringify(r),config.key).toString();
-			var bytes=CryptoJS.AES.decrypt(ct,'secretkey123');
-			request.ResponseHeader().Set("Content-Type","text/plain");
+			var bytes=CryptoJS.AES.decrypt(ct,config.key);
+			request.Response().SetHeader("Content-Type","text/plain");
 			print(ct);
 			//binwrite(bytes.words);
 		}catch(e){
-			request.ResponseHeader().Set("Content-Type","application/kwecrypt");
+			request.Response().SetHeader("Content-Type","application/kwecrypt");
 			print(JSON.stringify({"error":e.toString()}));
 		}
 		v++;

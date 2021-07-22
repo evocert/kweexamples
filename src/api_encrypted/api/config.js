@@ -1,5 +1,15 @@
 define(["module"],function(module){
 	module.exports={
-		"key":"secret123"
+		//main config settings
+		enabled:true,
+		cmdpath:"./cmd/",
+		preprocessor:[
+		],
+		postprocessor:[
+		],
+		//extra config settings
+		debug:true,
+		secret:"secret123",
+		key:"secret123"
 	}
 });

@@ -26,8 +26,8 @@
 				}
 			}
 			var t1=new Date();
-			request.ResponseHeader().Set("Content-Type","image/bmp");
-			request.ResponseHeader().Set("X-Duration",(t1-t0)+" ms");
+			request.Response().SetHeader("Content-Type","image/bmp");
+			request.Response().SetHeader("X-Duration",(t1-t0)+" ms");
 			binwrite(pre);
 			binwrite(int2byte(w));
 			binwrite(int2byte(h));
@@ -51,8 +51,8 @@
 				}
 			}
 			var t1=new Date();
-			request.ResponseHeader().Set("Content-Type","image/bmp");
-			request.ResponseHeader().Set("X-Duration",(t1-t0)+" ms");
+			request.Response().SetHeader("Content-Type","image/bmp");
+			request.Response().SetHeader("X-Duration",(t1-t0)+" ms");
 			binwrite(pre);
 			binwrite(int2byte(w));
 			binwrite(int2byte(h));
@@ -218,8 +218,8 @@
 			grid(8,0x11,0x11,0x88);
 			pull_up();
 			var t1=new Date();
-			request.ResponseHeader().Set("Content-Type","image/bmp");
-			request.ResponseHeader().Set("X-Duration",(t1-t0)+" ms");
+			request.Response().SetHeader("Content-Type","image/bmp");
+			request.Response().SetHeader("X-Duration",(t1-t0)+" ms");
 			binwrite(pre);
 			binwrite(int2byte(w));
 			binwrite(int2byte(h));
@@ -238,7 +238,7 @@
 		//test2();
 		//--------------------------------------------------------------------------------
 	}catch(e){
-		request.ResponseHeader().Set("Content-Type","application/json");
+		request.Response().SetHeader("Content-Type","application/json");
 		print(JSON.stringify({"error":e.toString()}));
 	}
 @>
