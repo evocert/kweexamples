@@ -6,6 +6,11 @@
 		<script type="application/javascript" src="./js/jsvim.min.js"></script>
 		<script type="application/javascript" src="./js/jquery-3.6.0.min.js"></script>
 		<style>
+*{
+
+overflow:hidden!important;
+	caret-color:#FF0000;
+}
 html,body{
 	background:#000000;
 	color:#00FF00;
@@ -125,8 +130,6 @@ textarea:focus, input:focus, button:focus{
 									success:function(r){
 										progress2.remove();
 										$("#prg").val(r.trim());
-
-										$("#submit").click();
 									}.bind(this),
 									error:function(e){
 										progress2.remove();
@@ -179,25 +182,27 @@ textarea:focus, input:focus, button:focus{
 						}.bind(this)
 					}).then(function(a){}.bind(this));
 				});
-				$("#src").focus();
 				$(document).on("keydown",function(e){
 					var id=new Date().getTime();
 					if(e.ctrlKey&&!e.altKey&&e.key.length==1){
 						//e.stopPropagation();
 						//e.preventDefault();
 						$("."+"ctrl-"+e.key).click();
+						if(($("."+"alt-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
 						$("."+"ctrl-"+e.key).focus();
 					}
 					if(!e.ctrlKey&&e.altKey&&e.key.length==1){
 						//e.stopPropagation();
 						//e.preventDefault();
 						$("."+"alt-"+e.key).click();
+						if(($("."+"alt-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
 						$("."+"alt-"+e.key).focus();
 					}
 					if(e.ctrlKey&&e.altKey&&e.key.length==1){
 						//e.stopPropagation();
 						//e.preventDefault();
 						$("."+"ctrl-alt-"+e.key).click();
+						if(($("."+"alt-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
 						$("."+"ctrl-alt-"+e.key).focus();
 					}
 				});
@@ -223,7 +228,16 @@ textarea:focus, input:focus, button:focus{
 						if (target !== null) {
 							/* attach vim. this is the only line really needed */
 							vim.attach_to( target )
-							target.focus()
+  vim.on_keydown = function(event){
+    var p 
+    var m = __special_keys[ event.keyCode ]
+    if (undefined === m ) {
+      p = true
+    } else {
+      p = this.on_key( '<'+m+'>', event )
+    }
+    return p
+  }
 						}
 					}
 					{
@@ -235,14 +249,83 @@ textarea:focus, input:focus, button:focus{
 							target.focus()
 						}
 					}
-					window.setTimeout(function(){$("#prg").focus();},200);
-
 				});
+					function getLineNumberAndColumnIndex(textarea){
+						var textLines = textarea.value.substr(0, textarea.selectionStart).split("\n");
+						var row = textLines.length;
+						var col = textLines[textLines.length-1].length;
+						return{row:row,col:col};
+					}
+					function selectTextareaLine(tarea,lineNum) {
+						lineNum--; // array starts at 0
+						var lines = tarea.value.split("\n");
 
+						// calculate start/end
+						var startPos = 0, endPos = tarea.value.length;
+						for(var x = 0; x < lines.length; x++) {
+							if(x == lineNum) {
+								break;
+							}
+							startPos += (lines[x].length+1);
 
+						}
 
+						var endPos = lines[lineNum].length+startPos;
 
+						// do selection
+						// Chrome / Firefox
 
+						if(typeof(tarea.selectionStart) != "undefined") {
+							tarea.focus();
+							tarea.selectionStart = startPos;
+							tarea.selectionEnd = endPos;
+							return true;
+						}
+
+						// IE
+						if (document.selection && document.selection.createRange) {
+							tarea.focus();
+							tarea.select();
+							var range = document.selection.createRange();
+							range.collapse(true);
+							range.moveEnd("character", endPos);
+							range.moveStart("character", startPos);
+							range.select();
+							return true;
+						}
+
+						return false;
+					}
+					/*
+
+					{
+						var te=$("#src")[0];
+						$(te).keyup(function(){
+							var cursor=getLineNumberAndColumnIndex(te);
+							selectTextareaLine(te,cursor.row);
+						});
+					}
+					{
+						var te2=$("#prg")[0];
+						$(te2).keyup(function(){
+							var cursor=getLineNumberAndColumnIndex(te2);
+							selectTextareaLine(te2,cursor.row);
+						});
+					}
+					{
+						$("#src").focus(function(){
+							var cursor=getLineNumberAndColumnIndex(this);
+							selectTextareaLine(this,cursor.row);
+							selectTextareaLine(this,1);
+						});
+						$("#prg").focus(function(){
+							var cursor=getLineNumberAndColumnIndex(this);
+							selectTextareaLine(this,cursor.row);
+							selectTextareaLine(this,1);
+						});
+					}
+					*/
+					window.setTimeout(function(){$("#src").focus();},200);
 			});
 		</script>
 	</body>
