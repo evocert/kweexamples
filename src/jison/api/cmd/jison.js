@@ -1,11 +1,14 @@
 define([
 	"module",
-	"../lib/jison/jison"
+	"../lib/jison/jison",
+	"../lib/request.js",
 ],function(
 	module,
-	_Jison
+	_Jison,
+	r
 ){
 	module.exports=function(options){
+		var t0=new Date();
 		options=typeof(options)=="object"?options:{};
 		if(Array.isArray(options.prg)){
 			options.prg=options.prg.join("\n");
@@ -21,7 +24,7 @@ define([
 
 		}
 		options.srcpath=typeof(options.srcpath)=="string"?options.srcpath:"www/kweexamples/src/jison/api/src/calc.l";
-		options.src=typeof(options.src)=="string"?null:options.src;
+		options.src=typeof(options.src)=="string"?options.src:null;
 		//var out=request.fsutils().CATS("./index.js");//../src/calc.l")
 		//console.Log(request.FS().CATS("./api/index.js"));//out;
 		var src=null;
@@ -48,6 +51,10 @@ define([
 				ret.out.push(e.toString());
 			}
 		});
+		var t1=new Date();
+		if(options.debug){
+			ret.ru=t1-t0;
+		}
 		return ret;
 	}
 });

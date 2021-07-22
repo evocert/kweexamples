@@ -3,54 +3,147 @@
 	<head>
 		<meta charset="utf-8"></meta>
 		<title>Jison</title>
+		<script type="application/javascript" src="./js/jsvim.min.js"></script>
 		<script type="application/javascript" src="./js/jquery-3.6.0.min.js"></script>
 		<style>
-			.container{
-				padding:8px;
-			}
-			textarea{
-				width:100%;
-			}
-			#out{
-				white-space:pre;
-			}
+html,body{
+	background:#000000;
+	color:#00FF00;
+	font-family:monospace;
+}
+.container{
+	padding:8px;
+}
+textarea{
+	background:#000000;
+	color:#00FF00;
+	width:100%;
+	border:unset;
+	background:#004400;
+	margin:0px;
+	padding:0px;
+}
+button{
+	color:#00FF00;
+	border:2px solid #008800;
+	border-radius:4px;
+	padding:8px;
+	background:#004400;
+}
+#out,#src,#prg{
+	background:#000000;
+	color:#00FF00;
+	white-space:pre;
+	background:#004400;
+	overflow:scroll;
+}
+#out{
+	white-space:nowrap;
+}
+textarea:focus, input:focus, button:focus{
+	outline: none;
+	background:#006600!important;
+}
+.error{
+	background:#8e1414;
+}
+.progress{
+	background:#000000;
+	color:#00FF00;
+	background:#008800;
+	padding:8px;
+	border-radius:8px;
+	position:fixed;
+	top:50%;
+	left:50%;
+	width:128px;
+	height:64px;
+	margin-top:-32px;
+	margin-left:-64px;
+	text-align:center;
+	display: table; 
+}
+.progress>div{
+	font-size:16px;
+	background:#004400;
+	display: table-cell; 
+	vertical-align: middle; 
+	text-align: center; 
+}
+
+		
 		</style>
 	</head>
 	<body>
 		<div class="container">
-			<label>src</label><br/>
-			<textarea id="src" rows="8"></textarea><br/>
-			<label>prg</label><br/>
-			<textarea id="prg" rows="8"></textarea><br/>
-			<pre id="out"></pre>
-			<button id="submit">Submit</button>
+			<div>
+				<button id="submit" class="alt-r" tooltip="Alt-R" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run <sup>[alt-r]</sup></button>
+				<button id="vkeys" class="alt-k" tooltip="Alt-R" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Vi-keys <sup>[alt-k]</sup></button>
+				<span style="float:right;font-size:22px;">Server Side Parser Generator</span>
+			</div><br/>
+			<div style="display:flex;">
+				<div style="width:50%;">
+					<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">LEX<sup>[alt-1]</sup></div>
+					<textarea spellcheck="false" id="src" rows="20" class="alt-1"></textarea><br/>
+				</div>
+				<div style="width:50%;">
+					<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">PRG<sup>[alt-2]</sup></div>
+					<textarea spellcheck="false" id="prg" rows="20" class="alt-2"></textarea><br/>
+				</div>
+			</div>
+			<div>
+				<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">OUT:</div>
+				<div id="out"></div>
+			</div>
 		</div>
 		<script>
 			$(document).ready(function(){
-				$.ajax({
-					method:"GET",
-					url:"./api/src/calc.l",
-					success:function(r){
-						$("#src").val(r);
-					}.bind(this),
-					error:function(e){
-						alert(JSON.stringify(r));
-					}.bind(this)
-				});
-				$.ajax({
-					method:"GET",
-					url:"./api/src/calc.prg",
-					success:function(r){
-						$("#prg").val(r.trim());
-					}.bind(this),
-					error:function(e){
-						alert(JSON.stringify(r));
-					}.bind(this)
-				});
+				function mkprogress(msg,timeout){
+					var node=$("<div/>").addClass("progress");
+					node.append(
+						$("<div/>").text(typeof(msg)=="undefined"?"...":msg)
+					);
+					$("body").append(node);
+					if(typeof(timeout)=="number"&&timeout>0){
+						window.setTimeout(function(){node.remove()}.bind(this),timeout);
+					}
+					return node;
+				};
+				{
+					var progress=mkprogress("Loading src...");
+					$.ajax({
+						method:"GET",
+						url:"./api/src/simple.l",
+						success:function(r){
+							progress.remove();
+							$("#src").val(r);
+							{
+								var progress2=mkprogress("Loading prg...");
+								$.ajax({
+									method:"GET",
+									url:"./api/src/simple.prg",
+									success:function(r){
+										progress2.remove();
+										$("#prg").val(r.trim());
 
-
+										$("#submit").click();
+									}.bind(this),
+									error:function(e){
+										progress2.remove();
+										alert(JSON.stringify(r));
+									}.bind(this)
+								});
+							}
+						}.bind(this),
+						error:function(e){
+							progress.remove();
+							alert(JSON.stringify(r));
+						}.bind(this)
+					});
+				}
 
 				$("#submit").click(function(){
+					var progress3=mkprogress("Running...");
 					$.ajax({
 						method:"POST",
 						url:"./api/",
@@ -59,19 +152,97 @@
 						},
 						data:JSON.stringify({
 							"cmd":"jison",
-							"debug":true,
+							"debug":false,//true,
 							"src":$("#src").val(),
 							"prg":$("#prg").val()
 						}),
 						success:function(r){
-							$("#out").text(JSON.stringify(r,0,2));
+							progress3.remove();
+							if(r.error){
+							}else{
+								var lines=[];
+								r.out.forEach(function(line){
+									$("#out").empty();
+									if(line.toString().indexOf("Error")!=-1){
+										lines.push($("<div/>").addClass("error").text(line));
+									}else{
+										lines.push($("<div/>").text(line));
+									}
+								}.bind(this));
+								$("#out").append(lines);//text(JSON.stringify(r,0,2));
+								//$("#out").text(JSON.stringify(r,0,2));
+							}
 						}.bind(this),
 						error:function(e){
+							progress3.remove();
 							$("#out").text(JSON.stringify(e));
 						}.bind(this)
 					}).then(function(a){}.bind(this));
+				});
+				$("#src").focus();
+				$(document).on("keydown",function(e){
+					var id=new Date().getTime();
+					if(e.ctrlKey&&!e.altKey&&e.key.length==1){
+						//e.stopPropagation();
+						//e.preventDefault();
+						$("."+"ctrl-"+e.key).click();
+						$("."+"ctrl-"+e.key).focus();
+					}
+					if(!e.ctrlKey&&e.altKey&&e.key.length==1){
+						//e.stopPropagation();
+						//e.preventDefault();
+						$("."+"alt-"+e.key).click();
+						$("."+"alt-"+e.key).focus();
+					}
+					if(e.ctrlKey&&e.altKey&&e.key.length==1){
+						//e.stopPropagation();
+						//e.preventDefault();
+						$("."+"ctrl-alt-"+e.key).click();
+						$("."+"ctrl-alt-"+e.key).focus();
+					}
+				});
+				$("#vkeys").click(function(){
+					mkprogress("Vi keys activated",1000);
+					{
+						/* create VIM instance for each textarea */
+						var vim = new VIM()
+
+						/* log debug messages */
+						// vim.on_log = function(m){ console.log('VIM: '+m) }
+						/*
+						vim.on_log = function(m) {
+							var LENGTH = 10
+							var p = $('<div></div>').text( m )
+							$('#log').prepend( p )
+							if ( $('#log').children().length > LENGTH ) {
+								$('#log').children(':last').remove()
+							}
+						}
+						*/
+						var target = document.getElementById('src')
+						if (target !== null) {
+							/* attach vim. this is the only line really needed */
+							vim.attach_to( target )
+							target.focus()
+						}
+					}
+					{
+						var vim = new VIM()
+						var target = document.getElementById('prg')
+						if (target !== null) {
+							/* attach vim. this is the only line really needed */
+							vim.attach_to( target )
+							target.focus()
+						}
+					}
+					window.setTimeout(function(){$("#prg").focus();},200);
 
 				});
+
+
+
+
+
 			});
 		</script>
 	</body>
