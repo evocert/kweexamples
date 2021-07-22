@@ -14,7 +14,7 @@
 				filelist.push(o);
 			}
 		}.bind(this));
-		request.ResponseHeader().Set("Content-Type","application/json");
+		request.Response().SetHeader("Content-Type","application/json");
 		print(JSON.stringify(filelist));
 		_fsutils.SET("./www/kweexamples/docgen/data.json",JSON.stringify(filelist));
 	}catch(e){
