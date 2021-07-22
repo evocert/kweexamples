@@ -28,12 +28,16 @@ textarea{
 	margin:0px;
 	padding:0px;
 }
-button{
+select,button{
 	color:#00FF00;
 	border:2px solid #008800;
 	border-radius:4px;
 	padding:8px;
 	background:#004400;
+}
+select{
+	font-size: 17px;
+	font-weight: bold;
 }
 #out,#src,#prg{
 	background:#000000;
@@ -45,7 +49,7 @@ button{
 #out{
 	white-space:nowrap;
 }
-textarea:focus, input:focus, button:focus{
+textarea:focus, input:focus, button:focus, select:focus{
 	outline: none;
 	background:#006600!important;
 }
@@ -84,6 +88,10 @@ textarea:focus, input:focus, button:focus{
 			<div>
 				<button id="submit" class="alt-r" tooltip="Alt-R" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run <sup>[alt-r]</sup></button>
 				<button id="vkeys" class="alt-k" tooltip="Alt-R" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Vi-keys <sup>[alt-k]</sup></button>
+				<select id="sample">
+					<option value="simple">simple</option>
+					<option value="calc">calc</option>
+				</select>
 				<span style="float:right;font-size:22px;">Server Side Parser Generator</span>
 			</div><br/>
 			<div style="display:flex;">
@@ -114,11 +122,11 @@ textarea:focus, input:focus, button:focus{
 					}
 					return node;
 				};
-				{
+				function loadSrc(path){
 					var progress=mkprogress("Loading src...");
 					$.ajax({
 						method:"GET",
-						url:"./api/src/simple.l",
+						url:"./api/src/"+path+".l",
 						success:function(r){
 							progress.remove();
 							$("#src").val(r);
@@ -126,7 +134,7 @@ textarea:focus, input:focus, button:focus{
 								var progress2=mkprogress("Loading prg...");
 								$.ajax({
 									method:"GET",
-									url:"./api/src/simple.prg",
+									url:"./api/src/"+path+".prg",
 									success:function(r){
 										progress2.remove();
 										$("#prg").val(r.trim());
@@ -181,6 +189,9 @@ textarea:focus, input:focus, button:focus{
 							$("#out").text(JSON.stringify(e));
 						}.bind(this)
 					}).then(function(a){}.bind(this));
+				});
+				$("#sample").on("change",function(){
+					loadSrc(this.value)
 				});
 				$(document).on("keydown",function(e){
 					var id=new Date().getTime();
@@ -326,6 +337,7 @@ textarea:focus, input:focus, button:focus{
 					}
 					*/
 					window.setTimeout(function(){$("#src").focus();},200);
+					loadSrc("calc");
 			});
 		</script>
 	</body>
