@@ -37,3 +37,26 @@ curl\
 	"outfmt":"json"
 }
 EOF
+#--------------------------------------------------------------------------------
+curl\
+	-X POST\
+	-H "Content-Type: application/xml"\
+	"$URL"\
+	--output -\
+	--data-binary @- << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<api>
+	<cmd>
+		jison
+	</cmd>
+	<prg>
+		1+2-3*4/5
+		2+3-4*5/1
+		3+4-5*1/2
+		4+5-1*2/3
+	</prg>
+	<outfmt>
+		xml
+	</outfmt>
+</api>
+EOF

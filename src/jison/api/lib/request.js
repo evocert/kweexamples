@@ -56,7 +56,7 @@ define([
 							try{
 								o[cnod.nodeName]=eval(cnod.textContent);
 							}catch(e){
-								o[cnod.nodeName]=cnod.textContent;
+								o[cnod.nodeName]=cnod.textContent.trim();
 							}
 						}.bind(this));
 					}

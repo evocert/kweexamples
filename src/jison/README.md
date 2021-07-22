@@ -1,4 +1,4 @@
-`Jison` demonstration. You can use `Jison` to create DSLs.
+`Jison` demonstration. You can use `Jison` to create DSLs, custom languages or language layers, or custom interpreters.
 
 The relevant file to look at is `./api/cmd/jison.js`. This handler expects an optional argument `prg` for the source code of a simple calculator program. Query parameter, JSON, and XML api may be used to invoke the test, for example
 
@@ -41,6 +41,33 @@ curl\
 	],
 	"outfmt":"json"
 }
+EOF
+```
+
+XML mode can be used as follows:
+
+```
+curl\
+	-X POST\
+	-H "Content-Type: application/xml"\
+	"$URL"\
+	--output -\
+	--data-binary @- << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<api>
+	<cmd>
+		jison
+	</cmd>
+	<prg>
+		1+2-3*4/5
+		2+3-4*5/1
+		3+4-5*1/2
+		4+5-1*2/3
+	</prg>
+	<outfmt>
+		xml
+	</outfmt>
+</api>
 EOF
 ```
 
