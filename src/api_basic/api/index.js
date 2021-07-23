@@ -2,7 +2,7 @@
 require([
 	"module",
 	"./config.js",
-	"./lib/request.js",
+	"./lib/request",
 	"./lib/xml2json.js",
 ],function(
 	module,

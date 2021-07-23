@@ -91,6 +91,8 @@ textarea:focus, input:focus, button:focus, select:focus{
 				<select id="sample">
 					<option value="calc">calc</option>
 					<option value="simple">simple</option>
+					<option value="song">song</option>
+					<option value="sparql">sparql</option>
 				</select>
 				<span style="float:right;font-size:22px;">Server Side Parser Generator</span>
 			</div><br/>
@@ -126,7 +128,7 @@ textarea:focus, input:focus, button:focus, select:focus{
 					var progress=mkprogress("Loading src...");
 					$.ajax({
 						method:"GET",
-						url:"./api/src/"+path+".l",
+						url:"./api/src/"+path+".jison",
 						success:function(r){
 							progress.remove();
 							$("#src").val(r);

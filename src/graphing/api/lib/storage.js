@@ -285,6 +285,17 @@ define(["module"],function(module){
 	};
 	//--------------------------------------------------------------------------------
 	module.exports={
+		getEnv:getEnv,
+		LogFactory:LogFactory,
+		AbstractLogger:AbstractLogger,
+		ClientLogger:ClientLogger,
+		ServerLogger:ServerLogger,
+		AbstractStorageFactory:AbstractStorageFactory,
+		StorageFactory:StorageFactory,
+		AbstractStorage:AbstractStorage,
+		Storage:Storage,
+		ClientStorage:ClientStorage,
+		ServerStorage:ServerStorage,
 		test:test
 	};
 });

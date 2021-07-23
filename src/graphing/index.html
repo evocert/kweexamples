@@ -3,52 +3,209 @@
 	<head>
 		<meta charset="utf-8">
 		<style>
-			*{background:#000000;color:#00FF00;}
-			#source{white-space:pre;}
-			#client{white-space:pre;}
-			#server{white-space:pre;}
+*{
+
+overflow:hidden!important;
+	caret-color:#FF0000;
+}
+html,body{
+	background:#000000;
+	color:#00FF00;
+	font-family:monospace;
+}
+.container{
+	padding:8px;
+}
+textarea{
+	background:#000000;
+	color:#00FF00;
+	width:100%;
+	border:unset;
+	background:#004400;
+	margin:0px;
+	padding:0px;
+}
+select,button{
+	color:#00FF00;
+	border:2px solid #008800;
+	border-radius:4px;
+	padding:8px;
+	background:#004400;
+}
+select{
+	font-size: 17px;
+	font-weight: bold;
+}
+#out,#src,#prg{
+	background:#000000;
+	color:#00FF00;
+	white-space:pre;
+	background:#004400;
+	overflow:scroll;
+}
+#out{
+	white-space:nowrap;
+}
+textarea:focus, input:focus, button:focus, select:focus{
+	outline: none;
+	background:#006600!important;
+}
+.error{
+	background:#8e1414;
+}
+.progress{
+	background:#000000;
+	color:#00FF00;
+	background:#008800;
+	padding:8px;
+	border-radius:8px;
+	position:fixed;
+	top:50%;
+	left:50%;
+	width:128px;
+	height:64px;
+	margin-top:-32px;
+	margin-left:-64px;
+	text-align:center;
+	display: table; 
+}
+.progress>div{
+	font-size:16px;
+	background:#004400;
+	display: table-cell; 
+	vertical-align: middle; 
+	text-align: center; 
+}
+
+		
 		</style>
 		<script src="/require.js"></script>
 		<script src="./js/require.conf.js"></script>
 	</head>
 	<body>
-		<div id="output">
-			<h3>Client:</h3>
-			<div id="client"></div>
-			<hr/>
-			<h3>Server:</h3>
-			<div id="server"></div>
-			<hr/>
-			<h3>Source:</h3>
-			<div id="source"></div>
+		<div class="container">
+			<div>
+				<button id="run_srv" class="alt-q" tooltip="Alt-Q" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Srv <sup>[alt-q]</sup></button>
+				<button id="run_cli" class="alt-w" tooltip="Alt-W" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Cli <sup>[alt-w]</sup></button>
+				<button id="vkeys" class="alt-k" tooltip="Alt-R" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Vi-keys <sup>[alt-k]</sup></button>
+				<select id="sample">
+					<option value="test0">test0</option>
+					<option value="test1">test1</option>
+					<option value="test2">test2</option>
+					<option value="test3">test3</option>
+					<option value="test4">test4</option>
+				</select>
+				<span style="float:right;font-size:22px;">SRV/CLI Executor</span>
+			</div><br/>
+			<div style="display:flex;">
+				<div style="width:50%;">
+					<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">SRV<sup>[alt-1]</sup></div>
+					<textarea spellcheck="false" id="srv" rows="20" class="alt-1"></textarea><br/>
+				</div>
+				<div style="width:50%;">
+					<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">CLI<sup>[alt-2]</sup></div>
+					<textarea spellcheck="false" id="cli" rows="20" class="alt-2"></textarea><br/>
+				</div>
+			</div>
+			<div>
+				<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">OUT:</div>
+				<div id="out"></div>
+			</div>
 		</div>
+
 		<script>
 			require([
 				"module",
-				"./api/lib/kwe/data.js",
+				"./api/lib/storage.js",
 				"/jquery.js",
 			],function(
 				module,
-				data,
+				storage,
 				_jq
 			){
-				$("#client").text(JSON.stringify(data.test(),0,2));
-				$.ajax({
-					type: 'GET',
-					url: '/kweexamples/src/graphing/api/',
-					data: {'cmd':'storage','outfmt':'json'},
-					complete: function(r){
-						$("#server").text(r.responseText);
+				$(document).on("keydown",function(e){
+					var id=new Date().getTime();
+					if(e.ctrlKey&&!e.altKey&&e.key.length==1){
+						//e.stopPropagation();
+						//e.preventDefault();
+						$("."+"ctrl-"+e.key).click();
+						if($("."+"ctrl-"+e.key).length==0)return;
+						if(($("."+"ctrl-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
+						$("."+"ctrl-"+e.key).focus();
+					}
+					if(!e.ctrlKey&&e.altKey&&e.key.length==1){
+						//e.stopPropagation();
+						//e.preventDefault();
+						$("."+"alt-"+e.key).click();
+						if($("."+"alt-"+e.key).length==0)return;
+						if(($("."+"alt-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
+						$("."+"alt-"+e.key).focus();
+					}
+					if(e.ctrlKey&&e.altKey&&e.key.length==1){
+						//e.stopPropagation();
+						//e.preventDefault();
+						$("."+"ctrl-alt-"+e.key).click();
+						if($("."+"ctrl-alt"+e.key).length==0)return;
+						if(($("."+"ctrl-alt-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
+						$("."+"ctrl-alt-"+e.key).focus();
 					}
 				});
-				$.ajax({
-					type: 'GET',
-					url: './api/lib/kwe/data.js',
-					data: {},
-					complete: function(r){
-						$("#source").text(r.responseText);
+				function mkprogress(msg,timeout){
+					var node=$("<div/>").addClass("progress");
+					node.append(
+						$("<div/>").text(typeof(msg)=="undefined"?"...":msg)
+					);
+					$("body").append(node);
+					if(typeof(timeout)=="number"&&timeout>0){
+						window.setTimeout(function(){node.remove()}.bind(this),timeout);
 					}
+					return node;
+				};
+				$("#run_srv").click(function(){
+					var progress3=mkprogress("Running...",100);
+					$.ajax({
+						type: 'POST',
+						headers:{
+							"Content-Type":"application/json"
+						},
+						url: '/kweexamples/src/graphing/api/?cmd=exec',
+						data:$("#srv").val(),
+						complete: function(r){
+							$("#out").text(r.responseText);
+						}
+					});
 				});
+				$("#run_cli").click(function(){
+					var progress3=mkprogress("Running...",100);
+					var ret;
+					try{
+						ret=eval($("#cli").val());
+					}catch(e){
+						ret=e.toString();
+					}
+					$("#out").text(ret);
+				});
+				$("#sample").on("change",function(){
+					loadSrc(this.value)
+				});
+
+				function loadSrc(path){
+					var progress=mkprogress("Loading src...");
+					$.ajax({
+						method:"GET",
+						url:"./res/"+path+".js",
+						success:function(r){
+							progress.remove();
+							$("#srv").val(r);
+							$("#cli").val(r);
+						}.bind(this),
+						error:function(e){
+							progress.remove();
+							alert(JSON.stringify(r));
+						}.bind(this)
+					});
+				}
+
 
 			});
 		</script>

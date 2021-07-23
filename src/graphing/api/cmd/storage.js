@@ -1,6 +1,6 @@
 define([
 	"module",
-	"../lib/kwe/data.js"
+	"../lib/storage.js"
 ],function(
 	module,
 	data

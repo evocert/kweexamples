@@ -1,38 +1,23 @@
 <@
-/*
-require=undefined;
-requirejs=undefined;
-define=undefined;
-if(caching.Find("requirejs")==null){
-	caching.Put("requirejs",_scriptinclude("./lib/requirejs/require.js"));
-}
-eval(caching.Find("requirejs"));
-requirejs.config({
-	kwe:{
-		caching:{
-			enabled:false,
-			key:"rjs",
-		}
-	}
-});
-*/
-//console.Log(caching.Find("rjs").String());
-//try{_parseEval.call(fsutilcode);}catch(e){console.Error(e.toString());};
 require([
 	"module",
 	"./config.js",
-	"./lib/kwe/request.js"
+	"./lib/request",
+	"./lib/xml2json.js",
 ],function(
 	module,
 	config,
-	r
+	r,
+	xml2json,
 ){
 	if(config.enabled==false)return;
 	var t0=new Date();
 	var cmd={};//buildins
 	var options={};
 	var ret=null;
+	//console.Log(JSON.stringify(r));
 	//--------------------------------------------------------------------------------
+
 	try{
 		//--------------------------------------------------------------------------------
 		//middleware:preprocessors
@@ -111,33 +96,6 @@ require([
 			}
 		}.bind(this));
 		ret=retbuf.length==1?retbuf[0]:retbuf;
-
-
-		/*
-		Object.keys(r.parameters).filter(function(k,v){
-			return k!="cmd";
-		}).forEach(function(k){
-			options[k]=r.parameters[k];
-		});
-		if(typeof(cmd[r.parameters.cmd])=="function"){
-			try{
-				ret=cmd[r.parameters.cmd](options);
-			}catch(e){
-				ret={"error":e.toString()};
-			}
-		}else{
-			//api cmds from ./cmd
-			require([config.cmdpath+r.parameters.cmd],function(cb){
-				if(typeof(cb)=="function"){
-					ret=cb(options);
-				}else{
-					ret={"error":"EMOD"};
-				}
-			},function(e){
-				ret={"error":e.toString()};
-			});
-		}
-		*/
 		//--------------------------------------------------------------------------------
 		//middleware:postprocessors
 		//--------------------------------------------------------------------------------
@@ -172,18 +130,19 @@ require([
 		switch(typeof(ret)){
 			case"number":
 			case"string":
-				request.ResponseHeader().Set("Content-Type","text/plain");
+				//request.ResponseHeader().Set("Content-Type","text/plain");
+				request.Response().SetHeader("Content-Type","text/plain");
 				print(ret);
 				break;
 			case"object":
 				var outfmt=r.parameters["outfmt"];
 				if(outfmt=="xml"){
-					var xml2json;
-					require(["./lib/kwe/xml2json.js"],function(m){xml2json=m;});
-					request.ResponseHeader().Set("Content-Type","application/xml");
+					//request.ResponseHeader().Set("Content-Type","application/xml");
+					request.Response().SetHeader("Content-Type","application/xml");
 					print(xml2json(ret));
 				}else{
-					request.ResponseHeader().Set("Content-Type","application/json");
+					//request.ResponseHeader().Set("Content-Type","application/json");
+					request.Response().SetHeader("Content-Type","application/json");
 					print(JSON.stringify(ret,0,2));
 				}
 				break;

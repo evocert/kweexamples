@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<head>
+		<meta charset="utf-8">
+		<style>
+			*{background:#000000;color:#00FF00;}
+			#source{white-space:pre;}
+			#client{white-space:pre;}
+			#server{white-space:pre;}
+		</style>
+		<script src="/require.js"></script>
+		<script src="./js/require.conf.js"></script>
+	</head>
+	<body>
+		<div id="output">
+			<h3>Client:</h3>
+			<div id="client"></div>
+			<hr/>
+			<h3>Server:</h3>
+			<div id="server"></div>
+			<hr/>
+			<h3>Source:</h3>
+			<div id="source"></div>
+		</div>
+		<script>
+			require([
+				"module",
+				"./api/lib/kwe/data.js",
+				"/jquery.js",
+			],function(
+				module,
+				data,
+				_jq
+			){
+				$("#client").text(JSON.stringify(data.test(),0,2));
+				$.ajax({
+					type: 'GET',
+					url: '/kweexamples/src/graphing/api/',
+					data: {'cmd':'storage','outfmt':'json'},
+					complete: function(r){
+						$("#server").text(r.responseText);
+					}
+				});
+				$.ajax({
+					type: 'GET',
+					url: './api/lib/kwe/data.js',
+					data: {},
+					complete: function(r){
+						$("#source").text(r.responseText);
+					}
+				});
+
+			});
+		</script>
+	</body>
+</html>
+
