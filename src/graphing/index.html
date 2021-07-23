@@ -188,7 +188,6 @@ textarea:focus, input:focus, button:focus, select:focus{
 				$("#sample").on("change",function(){
 					loadSrc(this.value)
 				});
-
 				function loadSrc(path){
 					var progress=mkprogress("Loading src...");
 					$.ajax({
@@ -205,8 +204,7 @@ textarea:focus, input:focus, button:focus, select:focus{
 						}.bind(this)
 					});
 				}
-
-
+				loadSrc("test0");
 			});
 		</script>
 	</body>
