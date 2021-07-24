@@ -1,3 +1,5 @@
+//lib Sat Jul 24 11:37:01 SAST 2021
+//todo:impl evocert caching.MapAPI
 //--------------------------------------------------------------------------------
 var defaults={
 	store:{
@@ -148,7 +150,7 @@ Storage.prototype.set=function(k,v){
 Storage.prototype.get=function(k){
 	throw("EABSTRACT");
 }
-Storage.prototype.append=function(k,v){
+Storage.prototype.push=function(k,v){
 	throw("EABSTRACT");
 }
 Storage.prototype.pop=function(k,v){
@@ -177,11 +179,15 @@ ClientStorage.prototype.get=function(k){
 	this.load();
 	return this.data[k];
 }
+ClientStorage.prototype.at=function(k,i){
+	if(Array.isArray(this.data[k]))return this.data[k][i];
+        throw("ETYPE");
+}
 ClientStorage.prototype.set=function(k,v){
 	this.data[k]=v;
 	this.commit();
 }
-ClientStorage.prototype.append=function(k,v){
+ClientStorage.prototype.push=function(k,v){
 	if(Array.isArray(this.data[k])){
 		this.data[k].push(v);
 		this.commit();
@@ -233,11 +239,14 @@ ServerStorage.prototype.get=function(k){
 	}
 	return caching.Find(this.k,k);
 }
+ServerStorage.prototype.at=function(k,i){
+	return caching.Find(this.k,k);
+}
 ServerStorage.prototype.set=function(k,v){
 	if(this.cursor==null)throw("ECURSOR");
 	this.cursor.Put(k,Array.isArray(v)?[v]:v);
 }
-ServerStorage.prototype.append=function(k,v){
+ServerStorage.prototype.push=function(k,v){
 	if(this.cursor==null)throw("ECURSOR");
 	this.cursor.Push(k,v);
 
@@ -274,29 +283,6 @@ ServerStorage.prototype.load=function(){
 ServerStorage.prototype.commit=function(options){
 };
 //--------------------------------------------------------------------------------
-function test(){
-	var sf=new StorageFactory();
-	var s=sf.create();
-	a=s.init("a",0);
-	b=s.init("b",1);
-	c=s.init("c",2);
-	c=s.init("d",[]);
-	if(s.get("a")>5)s.set("d",[]);
-	s.set("a",s.get("a")+1);
-	s.set("b",s.get("b")+1);
-	s.set("c",s.get("c")+1);
-	s.append("d",s.get("d").length+1);
-	logger.log(s.get("a"));
-	logger.log(s.get("b"));
-	logger.log(s.get("c"));
-	logger.log(s.get("d"));
-	logger.log(s.toString());
-	logger.log(s.toJson());
-	if(s.get("a")>10)s.clear();
-	s.commit();
-	return logger.flush();
-};
-//--------------------------------------------------------------------------------
 storage={
 	getEnv:getEnv,
 	LogFactory:LogFactory,
@@ -308,6 +294,5 @@ storage={
 	AbstractStorage:AbstractStorage,
 	Storage:Storage,
 	ClientStorage:ClientStorage,
-	ServerStorage:ServerStorage,
-	test:test
+	ServerStorage:ServerStorage
 };
