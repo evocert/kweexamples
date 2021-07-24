@@ -155,6 +155,9 @@ define(["module"],function(module){
 	Storage.prototype.append=function(k,v){
 		throw("EABSTRACT");
 	}
+	Storage.prototype.pop=function(k,v){
+		throw("EABSTRACT");
+	}
 	Storage.prototype.isNew=function(){
 		return this.isnew;
 	};
@@ -188,6 +191,14 @@ define(["module"],function(module){
 			this.commit();
 		}else throw("ETYPE");
 	}
+	ClientStorage.prototype.pop=function(k){
+		if(Array.isArray(this.data[k])){
+			var ret=this.data[k].pop();
+			this.commit();
+			return ret;
+		}else throw("ETYPE");
+	}
+
 	ClientStorage.prototype.toString=function(k,v){
 		return localStorage.getItem(this.k);
 	}
@@ -234,6 +245,12 @@ define(["module"],function(module){
 		if(this.cursor==null)throw("ECURSOR");
 		this.cursor.Push(k,v);
 
+	};
+	ServerStorage.prototype.pop=function(k){
+		if(this.cursor==null)throw("ECURSOR");
+		//return typeof(this.cursor.Remove());//Find(this.k,k);//.Pop();
+		var ret=this.cursor.Pop(k);//does not remove...
+		return ret;
 	};
 	ServerStorage.prototype.clear=function(){
 		caching.Remove(this.k);

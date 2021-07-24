@@ -45,6 +45,7 @@ select{
 }
 #out{
 	white-space:nowrap;
+	white-space:pre;
 }
 textarea:focus, input:focus, button:focus, select:focus{
 	outline: none;
@@ -97,15 +98,21 @@ textarea:focus, input:focus, button:focus, select:focus{
 				</select>
 				<span style="float:right;font-size:22px;">SRV/CLI Executor</span>
 			</div><br/>
+
+
 			<div style="display:flex;">
 				<div style="width:50%;">
 					<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">SRV<sup>[alt-1]</sup></div>
-					<textarea spellcheck="false" id="srv" rows="20" class="alt-1"></textarea><br/>
+					<textarea spellcheck="false" id="srv" rows="10" class="alt-1"></textarea><br/>
 				</div>
 				<div style="width:50%;">
 					<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">CLI<sup>[alt-2]</sup></div>
-					<textarea spellcheck="false" id="cli" rows="20" class="alt-2"></textarea><br/>
+					<textarea spellcheck="false" id="cli" rows="10" class="alt-2"></textarea><br/>
 				</div>
+			</div>
+			<div style="">
+				<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">LIB<sup>[alt-3]</sup></div>
+				<textarea spellcheck="false" id="lib" rows="10" class="alt-3"></textarea><br/>
 			</div>
 			<div>
 				<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">OUT:</div>
@@ -171,7 +178,12 @@ textarea:focus, input:focus, button:focus, select:focus{
 						url: '/kweexamples/src/graphing/api/?cmd=exec',
 						data:$("#srv").val(),
 						complete: function(r){
-							$("#out").text(r.responseText);
+							console.log(r);
+							if(typeof(r.responseJSON)!="undefined"){
+								$("#out").text(JSON.stringify(r.responseJSON,0,2));
+							}else{
+								$("#out").text(JSON.stringify(r.responseText));
+							}
 						}
 					});
 				});
@@ -179,15 +191,32 @@ textarea:focus, input:focus, button:focus, select:focus{
 					var progress3=mkprogress("Running...",100);
 					var ret;
 					try{
-						ret=eval($("#cli").val());
+						var src="";
+						src+=$("#lib").val();
+						src+="\n";
+						src+=$("#cli").val()
+						ret=eval(src);
 					}catch(e){
 						ret=e.toString();
 					}
-					$("#out").text(ret);
+					$("#out").text(JSON.stringify(ret,0,2));
 				});
 				$("#sample").on("change",function(){
 					loadSrc(this.value)
 				});
+				//load lib
+				$.ajax({
+					method:"GET",
+					url:"./api/lib/storage.js",
+					success:function(r){
+						$("#lib").val(r);
+					}.bind(this),
+					error:function(e){
+						progress.remove();
+						alert(JSON.stringify(r));
+					}.bind(this)
+				});
+
 				function loadSrc(path){
 					var progress=mkprogress("Loading src...");
 					$.ajax({
