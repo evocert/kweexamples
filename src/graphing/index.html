@@ -89,6 +89,7 @@ textarea:focus, input:focus, button:focus, select:focus{
 				<button id="run_srv" class="alt-q" tooltip="Alt-Q" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Srv <sup>[alt-q]</sup></button>
 				<button id="run_cli" class="alt-w" tooltip="Alt-W" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Cli <sup>[alt-w]</sup></button>
 				<button id="vkeys" class="alt-k" tooltip="Alt-R" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Vi-keys <sup>[alt-k]</sup></button>
+				<button id="save" class="alt-w" tooltip="Alt-W" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Save<sup>[alt-w]</sup></button>
 				<select id="sample">
 					<option value="test0">test0</option>
 					<option value="test1">test1</option>
@@ -130,6 +131,10 @@ textarea:focus, input:focus, button:focus, select:focus{
 				storage,
 				_jq
 			){
+var sf=new storage.StorageFactory("code");
+var s=sf.create();
+window.s=s;
+
 				$(document).on("keydown",function(e){
 					var id=new Date().getTime();
 					if(e.ctrlKey&&!e.altKey&&e.key.length==1){
@@ -208,25 +213,40 @@ textarea:focus, input:focus, button:focus, select:focus{
 				$("#sample").on("change",function(){
 					loadSrc(this.value)
 				});
-				//load lib
-				$.ajax({
-					method:"GET",
-					url:"./res/storage.js",
-					success:function(r){
-						$("#lib").val(r);
-					}.bind(this),
-					error:function(e){
-						progress.remove();
-						alert(JSON.stringify(r));
-					}.bind(this)
-				});
-
+				function loadlib(){
+					if(typeof(s.get("lib"))!="undefined"){
+						$("#lib").val(s.get("lib"));
+						return;
+					}
+					//load lib
+					$.ajax({
+						method:"GET",
+						url:"./res/storage.js",
+						success:function(r){
+							s.set("lib",r);
+							$("#lib").val(r);
+						}.bind(this),
+						error:function(e){
+							progress.remove();
+							alert(JSON.stringify(r));
+						}.bind(this)
+					});
+				}
 				function loadSrc(path){
+					if(typeof(s.get("srv"))!="undefined"&&
+					   typeof(s.get("cli"))!="undefined"
+					){
+						$("#srv").val(s.get("srv"));
+						$("#cli").val(s.get("cli"));
+						return;
+					}
 					var progress=mkprogress("Loading src...");
 					$.ajax({
 						method:"GET",
 						url:"./res/"+path+".js",
 						success:function(r){
+							s.init("srv",r);
+							s.init("cli",r);
 							progress.remove();
 							$("#srv").val(r);
 							$("#cli").val(r);
@@ -237,7 +257,15 @@ textarea:focus, input:focus, button:focus, select:focus{
 						}.bind(this)
 					});
 				}
+				function save(){
+					mkprogress("Saving...",100);
+					s.set("srv",$("#srv").val());
+					s.set("cli",$("#cli").val());
+					s.set("lib",$("#lib").val());
+				}
+				$("#save").click(function(){save();});
 				loadSrc("test0");
+				loadlib();
 			});
 		</script>
 	</body>
