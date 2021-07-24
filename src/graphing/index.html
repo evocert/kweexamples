@@ -102,20 +102,20 @@ textarea:focus, input:focus, button:focus, select:focus{
 
 			<div style="display:flex;">
 				<div style="width:50%;">
-					<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">SRV<sup>[alt-1]</sup></div>
+					<div style="with:100%;background:#006600;font-size:16px;font-weight:bold;">SRV<sup>[alt-1]</sup></div>
 					<textarea spellcheck="false" id="srv" rows="10" class="alt-1"></textarea><br/>
 				</div>
 				<div style="width:50%;">
-					<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">CLI<sup>[alt-2]</sup></div>
+					<div style="with:100%;background:#006600;font-size:16px;font-weight:bold;">CLI<sup>[alt-2]</sup></div>
 					<textarea spellcheck="false" id="cli" rows="10" class="alt-2"></textarea><br/>
 				</div>
 			</div>
 			<div style="">
-				<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">LIB<sup>[alt-3]</sup></div>
-				<textarea spellcheck="false" id="lib" rows="10" class="alt-3"></textarea><br/>
+				<div style="with:100%;background:#006600;font-size:16px;font-weight:bold;">LIB<sup>[alt-3]</sup></div>
+				<textarea spellcheck="false" id="lib" rows="20" class="alt-3"></textarea><br/>
 			</div>
 			<div>
-				<div style="with:100%;background:#004400;font-size:16px;font-weight:bold;">OUT:</div>
+				<div style="with:100%;background:#006600;font-size:16px;font-weight:bold;">OUT:</div>
 				<div id="out"></div>
 			</div>
 		</div>
@@ -170,13 +170,17 @@ textarea:focus, input:focus, button:focus, select:focus{
 				};
 				$("#run_srv").click(function(){
 					var progress3=mkprogress("Running...",100);
+					var src="";
+					src+=$("#lib").val();
+					src+="\n";
+					src+=$("#srv").val()
 					$.ajax({
 						type: 'POST',
 						headers:{
 							"Content-Type":"application/json"
 						},
 						url: '/kweexamples/src/graphing/api/?cmd=exec',
-						data:$("#srv").val(),
+						data:src,//$("#srv").val(),
 						complete: function(r){
 							console.log(r);
 							if(typeof(r.responseJSON)!="undefined"){
@@ -207,7 +211,7 @@ textarea:focus, input:focus, button:focus, select:focus{
 				//load lib
 				$.ajax({
 					method:"GET",
-					url:"./api/lib/storage.js",
+					url:"./res/storage.js",
 					success:function(r){
 						$("#lib").val(r);
 					}.bind(this),
