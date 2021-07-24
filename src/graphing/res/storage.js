@@ -129,7 +129,7 @@ AbstractStorage.prototype.toJson=function(){
 	throw("EABSTRACT");
 };
 //--------------------------------------------------------------------------------
-var Storage=function(){
+var Storage=function(options){
 	AbstractStorage.call(this/*,args*/);
 	options=typeof(options)=="object"?options:{};
 	this.k=typeof(options.k)=="string"?options.k:defaults.store.k;

@@ -90,7 +90,7 @@ define(["module"],function(module){
 	};
 	//--------------------------------------------------------------------------------
 	var StorageFactory=function(){};
-	var StorageFactory=function(){
+	var StorageFactory=function(options){
 		AbstractStorageFactory.call(this/*,args*/);
 	};
 	StorageFactory.prototype=Object.create(AbstractStorageFactory.prototype);
@@ -131,7 +131,7 @@ define(["module"],function(module){
 		throw("EABSTRACT");
 	};
 	//--------------------------------------------------------------------------------
-	var Storage=function(){
+	var Storage=function(options){
                 AbstractStorage.call(this/*,args*/);
 		options=typeof(options)=="object"?options:{};
 		this.k=typeof(options.k)=="string"?options.k:defaults.store.k;
@@ -172,9 +172,9 @@ define(["module"],function(module){
 		return JSON.parse(this.toString());
 	};
 	//--------------------------------------------------------------------------------
-	var ClientStorage=function(){
+	var ClientStorage=function(options){
 		if(getEnv()!="CLIENT")throw("EENV");
-                Storage.call(this/*,args*/);
+                Storage.call(this,options);///*,args*/);
 	};
 	ClientStorage.prototype=Object.create(Storage.prototype);
 	ClientStorage.prototype.get=function(k){

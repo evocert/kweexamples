@@ -86,9 +86,10 @@ textarea:focus, input:focus, button:focus, select:focus{
 	<body>
 		<div class="container">
 			<div>
-				<button id="run_srv" class="alt-q" tooltip="Alt-Q" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Srv <sup>[alt-q]</sup></button>
-				<button id="run_cli" class="alt-w" tooltip="Alt-W" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Cli <sup>[alt-w]</sup></button>
+				<button id="run_srv" class="alt-j" tooltip="Alt-Q" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Srv <sup>[alt-j]</sup></button>
+				<button id="run_cli" class="alt-k" tooltip="Alt-W" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Cli <sup>[alt-k]</sup></button>
 				<button id="vkeys" class="alt-k" tooltip="Alt-R" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Vi-keys <sup>[alt-k]</sup></button>
+				<button id="reset" class="alt-q" tooltip="Alt-Q" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Reset<sup>[alt-q]</sup></button>
 				<button id="save" class="alt-w" tooltip="Alt-W" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Save<sup>[alt-w]</sup></button>
 				<select id="sample">
 					<option value="test0">test0</option>
@@ -131,8 +132,8 @@ textarea:focus, input:focus, button:focus, select:focus{
 				storage,
 				_jq
 			){
-var sf=new storage.StorageFactory("code");
-var s=sf.create();
+var sf=new storage.StorageFactory();
+var s=sf.create({k:"code"});
 window.s=s;
 
 				$(document).on("keydown",function(e){
@@ -187,7 +188,6 @@ window.s=s;
 						url: '/kweexamples/src/graphing/api/?cmd=exec',
 						data:src,//$("#srv").val(),
 						complete: function(r){
-							console.log(r);
 							if(typeof(r.responseJSON)!="undefined"){
 								$("#out").text(JSON.stringify(r.responseJSON,0,2));
 							}else{
@@ -264,6 +264,12 @@ window.s=s;
 					s.set("lib",$("#lib").val());
 				}
 				$("#save").click(function(){save();});
+				$("#reset").click(function(){
+					mkprogress("Resetting...",100);
+					s.clear();
+					loadSrc("test0");
+					loadlib();
+				});
 				loadSrc("test0");
 				loadlib();
 			});
