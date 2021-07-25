@@ -1,13 +1,23 @@
 requirejs.config({
-	"waitSeconds":0,
-	"baseUrl":"./js",
+	//"waitSeconds":0,
+	//"baseUrl":"./js",
 	"paths":{
+		"text":"./js/requirejs/require.text",
+		"css":"./js/requirejs/css",
+		"frag":"frag",
+		"style":"css",
+		"ace":"./js/ace/ace",
 	},
 	"packages":[],
 	"config":{
 	},
 	"map":{},
 	"shim":{
+		"ace":{
+			"deps":[],
+			"exports":"ace"
+		}
+
 	},
 	"deps":[]
 });

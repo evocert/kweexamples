@@ -1,39 +1,76 @@
+*{
+
+overflow:hidden!important;
+	caret-color:#FF0000;
+}
 html,body{
-	margin:unset;
-	padding:unset;
-	overflow:hidden;
+	background:#000000;
+	color:#00FF00;
+	font-family:monospace;
 }
-.node{
-    cursor: pointer;
+.container{
+	padding:8px;
 }
-.overlay{
-	background-color:#222222;
+textarea{
+	background:#000000;
+	color:#00FF00;
+	width:100%;
+	border:unset;
+	background:#004400;
+	margin:0px;
+	padding:0px;
 }
-.node circle{
-	stroke:#FFFFFF;
-	stroke-width:1.5px;
-	fill:#888888!important;
+select,button{
+	color:#00FF00;
+	border:2px solid #008800;
+	border-radius:4px;
+	padding:8px;
+	background:#004400;
 }
-.node text{
-	font-size:10px; 
-	font-family:sans-serif;
-	fill:#FFFFFF;
+select{
+	font-size: 17px;
+	font-weight: bold;
 }
-.link{
-	fill:none;
-	stroke:#ccc;
-	stroke-width:1.5px;
+#out,#src,#prg{
+	background:#000000;
+	color:#00FF00;
+	white-space:pre;
+	background:#004400;
+	overflow:scroll;
 }
-.templink{
-	fill:none;
-	stroke:red;
-	stroke-width:3px;
+#out{
+	white-space:nowrap;
+	white-space:pre;
 }
-.ghostCircle.show{
-	display:block;
+textarea:focus, input:focus, button:focus, select:focus{
+	outline: none;
+	background:#006600!important;
 }
-.ghostCircle, .activeDrag .ghostCircle{
-	 display:none;
+.error{
+	background:#8e1414;
+}
+.progress{
+	background:#000000;
+	color:#00FF00;
+	background:#008800;
+	padding:8px;
+	border-radius:8px;
+	position:fixed;
+	top:50%;
+	left:50%;
+	width:128px;
+	height:64px;
+	margin-top:-32px;
+	margin-left:-64px;
+	text-align:center;
+	display: table; 
+}
+.progress>div{
+	font-size:16px;
+	background:#004400;
+	display: table-cell; 
+	vertical-align: middle; 
+	text-align: center; 
 }
 
-
+		

@@ -1,0 +1,35 @@
+<div class="container">
+	<div>
+		<button id="run_srv" class="alt-j" tooltip="Alt-Q" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Srv <sup>[alt-j]</sup></button>
+		<button id="run_cli" class="alt-k" tooltip="Alt-W" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Run Cli <sup>[alt-k]</sup></button>
+		<button id="vkeys" class="alt-k" tooltip="Alt-R" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Vi-keys <sup>[alt-k]</sup></button>
+		<button id="reset" class="alt-q" tooltip="Alt-Q" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Reset<sup>[alt-q]</sup></button>
+		<button id="save" class="alt-w" tooltip="Alt-W" style="with:100%;background:#004400;font-size:16px;font-weight:bold;">Save<sup>[alt-w]</sup></button>
+		<select id="sample">
+			<option value="test0">test0</option>
+			<option value="test1">test1</option>
+			<option value="test2">test2</option>
+			<option value="test3">test3</option>
+			<option value="test4">test4</option>
+		</select>
+		<span style="float:right;font-size:22px;">SRV/CLI Executor</span>
+	</div><br/>
+	<div style="display:flex;">
+		<div style="width:50%;">
+			<div style="with:100%;background:#006600;font-size:16px;font-weight:bold;">SRV<sup>[alt-1]</sup></div>
+			<textarea spellcheck="false" id="srv" rows="10" class="alt-1"></textarea><br/>
+		</div>
+		<div style="width:50%;">
+			<div style="with:100%;background:#006600;font-size:16px;font-weight:bold;">CLI<sup>[alt-2]</sup></div>
+			<textarea spellcheck="false" id="cli" rows="10" class="alt-2"></textarea><br/>
+		</div>
+	</div>
+	<div style="">
+		<div style="with:100%;background:#006600;font-size:16px;font-weight:bold;">LIB<sup>[alt-3]</sup></div>
+		<textarea spellcheck="false" id="lib" rows="20" class="alt-3"></textarea><br/>
+	</div>
+	<div>
+		<div style="with:100%;background:#006600;font-size:16px;font-weight:bold;">OUT:</div>
+		<div id="out"></div>
+	</div>
+</div>
