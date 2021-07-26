@@ -1,12 +1,14 @@
 define([
 	"module",
 	"ace",
+	"js/kwe/progress/index",
 	"js/jquery/jquery",
 	"text!./index.html",
 	"api/lib/storage.js"
 ],function(
 	module,
 	ace,
+	Progress,
 	_jq,
 	index,
 	storage
@@ -231,6 +233,7 @@ define([
 	}
 
 	Editor.prototype.save=function(){
+		var progress=new Progress({msg:"saving",timeout:200});
 		s.set(this.path,this.editor.getValue());
 	}
 	module.exports=function(){
@@ -313,6 +316,8 @@ define([
 		edt_cli.load("./res/test0_srv.js");
 		edt_lib.load("./res/storage.js");
 		var runsrv=function(){
+
+			var progress=new Progress({msg:"running server"});
 			//var progress3=mkprogress("Running...",100);
 			var src="";
 			src+=edt_lib.val();
@@ -326,6 +331,7 @@ define([
 				url:"/kweexamples/src/graphing/api/?cmd=exec",
 				data:src,
 				complete: function(r){
+					progress.close();
 					if(typeof(r.responseJSON)!="undefined"){
 						edt_out.val(JSON.stringify(r.responseJSON,0,2));
 					}else{
@@ -336,6 +342,7 @@ define([
 		};
 		$("#run_srv").click(runsrv);
 		var runcli=function(){
+			var progress=new Progress({msg:"running client",timeout:200});
 			//var progress3=mkprogress("Running...",100);
 			var ret;
 			try{
@@ -350,13 +357,21 @@ define([
 			edt_out.val(JSON.stringify(ret,0,2));
 		};
 		var toggleVi=function(){
+			var progress=new Progress({msg:"toggling vi-keys",timeout:200});
 			editors.forEach(function(e){
 				e.toggleVi();
 			});
 		};
 		$("#run_cli").click(runcli);
 		$("#vkeys").click(toggleVi);
+		$("#save").click(function(){
+			var progress=new Progress({msg:"saving",timeout:200});
+			editors.forEach(function(e){
+				e.save();
+			});
+		});
 		$("#reset").click(function(){
+			var progress=new Progress({msg:"resetting",timeout:200});
 			edt_cli.reload();
 			edt_srv.reload();
 			edt_lib.reload();
