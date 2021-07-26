@@ -1,5 +1,5 @@
 requirejs.config({
-	//"waitSeconds":0,
+	"waitSeconds":800,//0,
 	//"baseUrl":"./js",
 	"paths":{
 		"text":"./js/requirejs/require.text",
