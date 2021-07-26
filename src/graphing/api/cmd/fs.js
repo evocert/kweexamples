@@ -1,0 +1,34 @@
+define([
+	"module",
+	"../lib/request",
+],function(
+	module,
+	r
+){
+	module.exports=function(options){
+		options=typeof(options)=="undefined"?{}:options;
+		options.operation=typeof(options.operation)=="undefined"?null:options.operation;
+		options.path=typeof(options.path)=="undefined"?null:options.path;
+		options.contents=typeof(options.contents)=="undefined"?null:options.contents;
+		if(options.operation==null)throw("EOPERATION");
+		if(options.path==null)throw("EPATH");
+		switch(options.operation){
+			case"set":
+				if(options.content==null)throw("ECONTENTS");
+				if(options.content==null)throw("ECONTENTS");
+				_fsutils.SET("www/kweexamples/src/graphing/"+options.path,options.content);
+				return{"status":"ok"};
+			case"append":
+				if(options.content==null)throw("ECONTENTS");
+				//_fsutils.APPEND("www/kweexamples/src/graphing/res/"+options.path,options.contents);//???
+				_fsutils.SET("www/kweexamples/src/graphing/"+options.path,_fsutils.CATS("www/kweexamples/src/graphing/"+options.path)+options.content);
+				return{"status":"ok"};
+			case"cat":
+				return _fsutils.CATS("www/kweexamples/src/graphing/"+options.path);
+			case"append":
+				return"append";
+			default:
+				throw("EOPERATION");
+		}
+	};
+});

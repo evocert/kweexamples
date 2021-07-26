@@ -312,11 +312,10 @@ define([
 		var edt_cli=new Editor({node:divedt1,val:"",lines:10,vi_keys:edt_cli_opts.vi_keys,lang:"javascript",commands:{run:function(){runcli();}}});
 		var edt_lib=new Editor({node:divedt2,val:"",lines:10,vi_keys:edt_lib_opts.vi_keys,lang:"javascript",commands:{run:function(){}}});
 		var edt_out=new Editor({node:divedt3,val:"",lines:15,vi_keys:edt_out_opts.vi_keys,readOnly:true,theme:"chaos",commands:{run:function(){}}});
-		edt_srv.load("./res/test0_cli.js");
-		edt_cli.load("./res/test0_srv.js");
+		edt_srv.load("./res/test0_srv.js");
+		edt_cli.load("./res/test0_cli.js");
 		edt_lib.load("./res/storage.js");
 		var runsrv=function(){
-
 			var progress=new Progress({msg:"running server"});
 			//var progress3=mkprogress("Running...",100);
 			var src="";
@@ -368,6 +367,33 @@ define([
 			var progress=new Progress({msg:"saving",timeout:200});
 			editors.forEach(function(e){
 				e.save();
+			});
+		});
+		$("#commit").click(function(){
+			editors.forEach(function(e){
+				if(typeof(e.path)=="undefined")return;
+				var progress=new Progress({msg:"comitting "+e.path+"..."});
+				$.ajax({
+					method:"POST",
+					url:"./api/",
+					headers:{"Content-Type":"application/json"},
+					data:JSON.stringify({
+						cmd:"fs",
+						operation:"set",
+						content:e.editor.getValue(),
+						path:e.path
+					}),
+					success:function(r){
+						new Progress({msg:JSON.stringify(r),timeout:300});
+						progress.close();
+						//alert(JSON.stringify(r));
+					}.bind(this),
+					error:function(e){
+						progress.close();
+						new Progress({msg:"failed to commit "+e.path+"...",timeout:200});
+					}.bind(this)
+				});
+				//alert(e.path);
 			});
 		});
 		$("#reset").click(function(){

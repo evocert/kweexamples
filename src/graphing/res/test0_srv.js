@@ -1,5 +1,5 @@
 (function(){
-	try{
+	try{//fdsa
 		var sf=new StorageFactory();
 		var s=sf.create();
 		//s.clear();
