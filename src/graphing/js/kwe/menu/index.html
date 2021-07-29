@@ -1,0 +1,135 @@
+<style>
+
+.ui-menu {     overflow: hidden; }
+.ui-menu .ui-menu {    overflow: visible !important;
+width:120px!important;
+}
+.ui-menu > li {     float: left;    display: block;    width: auto !important;}
+.ui-menu ul li {    display:block;    float:none;
+padding:0px!important;
+margin:0px!important;
+}
+.ui-menu ul li ul {    left:120px !important;    width:100%;}
+.ui-menu ul li ul li {    width:auto;}
+.ui-menu ul li ul li a {    float:left;}
+.ui-menu > li {    margin: 5px 5px !important;    padding: 0 0 !important;}
+.ui-menu > li > a {     float: left;    display: block;    clear: both;    overflow: hidden;}
+.ui-menu .ui-menu-icon {     margin-top: 0.3em !important;}
+.ui-menu .ui-menu .ui-menu li {     float: left;    display: block;
+padding:0px!important;
+margin:0px!important;
+width: 100% !important;
+}
+.testnav li a:hover{background-color:#ccc;}
+#navigator{position:relative;}
+
+#nav {
+  overflow : hidden;
+ }
+
+#nav > li {
+  float : left;
+  /*width : 100px !important;*/
+}
+
+#nav .ui-menu {
+  width : 114px;
+}
+
+/* -------------------------------------------------------------------------------- */
+.ui-widget.ui-widget-content {
+    border: 1px solid #666;
+    font-size: 12px;
+}
+.ui-menu .ui-menu-icon {
+    margin-top: 0.2em !important;
+}
+.ui-widget.ui-widget-content {
+    border: unset;
+    font-size: 12px;
+    font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+.ui-menu .ui-menu-item-wrapper {
+}
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover{
+}
+.ui-menu-item *{
+/*
+	border: 0px!important;
+	margin:0px!important;;
+	padding:0px!important;
+*/
+}
+.ui-menu-icon{
+  display:none!important;;
+}
+
+
+
+
+
+
+
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+    border: 1px solid #f2777a;
+    background:  #f2777a;
+    font-weight: bold;
+    color: #fff;
+}
+</style> 
+<ul id="menu">
+  <li><div>File</div>
+    <ul>
+      <li class="ui-state-disabled"><div>New</div></li>
+      <li><div>Open</div></li>
+      <li><div>Close</div></li>
+    </ul>
+  </li>
+  <li><div>Edit</div>
+    <ul>
+      <li><div>Copy</div>
+      <li><div>Cut</div>
+      <li><div>Paste</div>
+      <li><div>Select All</div>
+      <li><div>Delete</div>
+      <li><div>Properties</div>
+        <ul>
+          <li><div>Libraries</div></li>
+          <li><div>Configuration</div></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><div>Run</div>
+    <ul>
+  	<li data-action="runsrv"><div>Server</div></li>
+  	<li data-action="runcli"><div>Client</div></li>
+    </ul>
+  </li>
+  <li><div>Project</div>
+    <ul>
+  	<li><div>Commit</div></li>
+  	<li><div>Roll back</div></li>
+    </ul>
+  </li>
+
+  <li><div>Tools</div>
+    <ul>
+  	<li><div>Terminal</div></li>
+    </ul>
+  </li>
+  <li class="ui-state-disabled"><div>Reset</div></li>
+  <li><div>Help</div>
+    <ul>
+      <li data-action="help"><div>Help</div></li>
+      <li data-action="topics"><div>Topics</div></li>
+      <li data-action="about"><div>About</div></li>
+    </ul>
+  </li>
+</ul>

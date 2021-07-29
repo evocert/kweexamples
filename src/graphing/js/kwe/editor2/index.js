@@ -2,17 +2,26 @@ define([
 	"module",
 	"ace",
 	"js/kwe/progress/index",
-	"js/jquery/jquery",
 	"text!./index.html",
-	"api/lib/storage.js"
+	"api/lib/storage.js",
+	"jquery",//js/jquery/jquery",
+	"WinBox",
+	"xterm",
+	"xterm-addon-fit",
+	"css!./index.css"
 ],function(
 	module,
 	ace,
 	Progress,
-	_jq,
 	index,
-	storage
+	storage,
+	_jq,
+	WinBox,
+	xterm,
+	xaf
 ){
+	$=_jq;
+	//$("body").append(div_term);
 	var sf=new storage.StorageFactory();
 	var s=sf.create({k:"code"});
 	window.s=s;
@@ -237,51 +246,6 @@ define([
 		s.set(this.path,this.editor.getValue());
 	}
 	module.exports=function(){
-		var style=$("<style/>").text(`
-			html,body{
-				background:#272727;
-			}
-			.ace_focus{
-				background:#444444;;
-			}
-			.menu{margin-bottom:8px;}
-			.menu select{vertical-align:top;}
-			.menu select,
-			.menu button{
-				color:#FFFFFF;
-				border:0px;
-				border-radius:0px;
-				background:#393939;
-				margin:0px!important;
-				font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-				direction: ltr;
-				padding: 2px!important;;
-				height:20px;
-			}
-			.menu span{
-				color:#FFFFFF;
-				font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-				padding: 3px!important;;
-				height:20px;
-				position:absolute;
-				right:0px;
-			}
-			.title{
-				color:#FFFFFF;
-				border:0px;
-				border-radius:0px;
-				background:#393939;
-				margin:0px!important;
-				font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
-				direction: ltr;
-				padding: 3px!important;;
-				height:20px;
-			}
-			.ace_scrollbar {
-				display: none !important;
-			}
-		`);
-		$("body").append(style);
 		var div=$("<div/>").css({});
 		index=$(index);
 		div.append(index);
@@ -403,6 +367,80 @@ define([
 			edt_lib.reload();
 		});
 
+window.setTimeout(function(){
+var fitAddon=new xaf.FitAddon();
+        var term;
+	var wb=
+new WinBox({
+
+    id: "xterm",
+    //class: ["no-full", "my-theme"],
+    root: document.body,
+    title: "xterm.js",
+    background: "#fff",
+    border: 4,
+    width: 200,
+    height: 200,
+    //x: "center",
+    //y: "center",
+    max: false,
+    splitscreen: true,
+    //top: 50,
+    //right: 50,
+    bottom: 0,
+    left: 50,
+    //html: "width: 200, height: 200",
+    onfocus: function(){
+	fitAddon.fit();
+	/*
+        this.setBackground("#fff");
+	*/
+    },
+    onblur: function(){
+	/*
+        this.setBackground("#999");
+	*/
+    },
+    onresize: function(width, height){
+	fitAddon.fit();
+	/*
+        this.body.textContent = (
+            "width: " + width + ", " +
+            "height: " + height
+        );
+	*/
+    },
+    onmove: function(x, y){
+	/*
+        this.body.textContent = (
+            "x: " + x + ", " +
+            "y: " + y
+        );
+	*/
+    },
+    onclose: function(force){
+        return !confirm("Close window?");
+    }
+});
+
+        term=new xterm.Terminal();
+        term.open(wb.body);
+        term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')	
+	term.onKey(e => {
+	    //console.log(e.key);
+	    term.write(e.key);
+	    if (e.key == '\r')
+		term.write('\n');
+	})
+term.loadAddon(fitAddon);
+window.fitAddon=fitAddon;
+	window.term=term;
+fitAddon.fit();
+
+}.bind(this),500);
+
+
+		//m=new Menu();
 	};
 	$(document).on("keydown",function(e){
 		if(e.altKey&&e.key=="n"){
@@ -410,6 +448,19 @@ define([
 			if(curEditor>editors.length-1)curEditor=0;
 			if(editors.length>0)editors[curEditor].editor.focus();
 		}
+		if(e.altKey&&e.key=="+"){
+			var curlines=editors[curEditor].editor.getOption("maxLines");
+			editors[curEditor].editor.setOption("minLines",curlines+1);
+			editors[curEditor].editor.setOption("maxLines",curlines+1);
+		}
+		if(e.altKey&&e.key=="-"){
+			var curlines=editors[curEditor].editor.getOption("maxLines");
+			curlines=curlines<1?1:curlines;
+			editors[curEditor].editor.setOption("minLines",curlines-1);
+			editors[curEditor].editor.setOption("maxLines",curlines-1);
+		}
+
+
 		if(e.altKey&&e.key=="p"){
 			curEditor--;
 			if(curEditor<0)curEditor=editors.length-1;
@@ -433,4 +484,7 @@ define([
 			$("."+"ctrl-alt-"+e.key).focus();
 		}
 	});
+
+
+
 });

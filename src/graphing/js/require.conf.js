@@ -1,12 +1,22 @@
 requirejs.config({
 	"waitSeconds":800,//0,
 	//"baseUrl":"./js",
+	deps: ["main"],
 	"paths":{
 		"text":"./js/requirejs/require.text",
 		"css":"./js/requirejs/css",
 		"frag":"frag",
 		"style":"css",
+		"jquery":"./js/jquery/jquery",
+		"jquery-ui":"./js/jquery-ui/jquery-ui.min",//./js/jquery.ui/jquery-ui",
 		"ace":"./js/ace/ace",
+		"jspanel":"./js/jspanel/jspanel",
+		"jspanel.dock":"./js/jspanel/jspanel.dock",
+		"jspanel.modal":"./js/jspanel/jspanel.modal",
+		"jspanel.contextmenu":"./js/jspanel/jspanel.contextmenu",
+		"WinBox":"./js/winbox/winbox.bundle",
+		"xterm":"./js/xterm/xterm.min",
+		"xterm-addon-fit":"./js/xterm/xterm-addon-fit"
 	},
 	"packages":[],
 	"config":{
@@ -16,6 +26,37 @@ requirejs.config({
 		"ace":{
 			"deps":[],
 			"exports":"ace"
+		},
+		"jquery-ui": {
+			"exports":"$",
+			"deps":[
+				"jquery",
+				//"css!./js/jquery.ui/jquery-ui.css"
+				"css!./js/jquery-ui/jquery-ui.min.css",
+				"css!./js/jquery-ui/jquery-ui.structure.min.css",
+				"css!./js/jquery-ui/jquery-ui.theme.min.css",
+			]
+		},
+		"jspanel":{
+			"deps":["css!./js/jspanel/jspanel.css"],
+			"exports":"jsPanel"
+		},
+		"jspanel.dock":{"deps":["jspanel"]},
+		"jspanel.modal":{"deps":["jspanel"]},
+		"jspanel.contextmenu":{"deps":["jspanel"]},
+		"WinBox":{
+			"deps":[
+				"css!./js/winbox/css/winbox.min.css",
+				"css!./js/winbox/css/themes/modern.min.css",
+				"css!./js/winbox/css/themes/white.min.css",
+			],
+			"exports":"WinBox"
+		},
+		"xterm":{
+			"deps":["css!./js/xterm/xterm.css"]
+		},
+		"xterm-addon-fit":{
+			"deps":["xterm"]
 		}
 
 	},

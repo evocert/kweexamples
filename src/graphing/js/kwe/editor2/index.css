@@ -1,0 +1,57 @@
+html,body{
+	background:#272727;
+}
+.ace_focus{
+	background:#444444;;
+}
+.menu{margin-bottom:8px;}
+.menu select{vertical-align:top;}
+.menu select,
+.menu button{
+	color:#FFFFFF;
+	border:0px;
+	border-radius:0px;
+	background:#393939;
+	margin:0px!important;
+	font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+	direction: ltr;
+	padding: 2px!important;;
+	height:20px;
+}
+.menu span{
+	color:#FFFFFF;
+	font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+	padding: 3px!important;;
+	height:20px;
+	position:absolute;
+	right:0px;
+}
+.title{
+	color:#FFFFFF;
+	border:0px;
+	border-radius:0px;
+	background:#393939;
+	margin:0px!important;
+	font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+	direction: ltr;
+	padding: 3px!important;;
+	height:20px;
+}
+.ace_scrollbar {
+	display: none !important;
+}
+.winbox{
+    background: #666666!important;
+}
+.winbox .wb-body {
+	color: #fff;
+	background: #131820;
+	font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+	direction: ltr;
+}
+.winbox .wb-title {
+	color: #FFFFFF;
+}
+.winbox .wb-icon {
+    /*filter: invert(1);*/
+}

@@ -1,4 +1,5 @@
 //lib Sat Jul 24 11:37:01 SAST 2021
+//https://journal.stuffwithstuff.com/2014/12/21/rooms-and-mazes/
 //todo:impl evocert caching.MapAPI
 //--------------------------------------------------------------------------------
 var defaults={
@@ -15,7 +16,11 @@ function getEnv(){
 		ret="CLIENT";
 	}
 	return ret;
-}
+};
+function functionName(func){
+    var result = /^function\s+([\w\$]+)\s*\(/.exec( func.toString() )
+    return  result  ?  result[ 1 ]  :  '' // for an anonymous function there won't be a match
+};
 //--------------------------------------------------------------------------------
 var LogFactory=function(){};
 LogFactory.prototype.create=function(options){
@@ -83,9 +88,7 @@ var logf=new LogFactory();
 var logger=logf.create();
 //--------------------------------------------------------------------------------
 var AbstractStorageFactory=function(){};
-AbstractStorageFactory.prototype.create=function(){
-	throw("EABSTRACT");
-};
+AbstractStorageFactory.prototype.create=function(){throw("EABSTRACT");};
 //--------------------------------------------------------------------------------
 var StorageFactory=function(){};
 var StorageFactory=function(){
@@ -107,27 +110,55 @@ StorageFactory.prototype.create=function(options){
 };
 //--------------------------------------------------------------------------------
 var AbstractStorage=function(){};
-AbstractStorage.prototype.init=function(k,v){
-	throw("EABSTRACT");
-}
-AbstractStorage.prototype.set=function(k,v){
-	throw("EABSTRACT");
-}
-AbstractStorage.prototype.get=function(k){
-	throw("EABSTRACT");
-}
-AbstractStorage.prototype.isNew=function(){
-	throw("EABSTRACT");
-};
-AbstractStorage.prototype.clear=function(){
-	throw("EABSTRACT");
-};
-AbstractStorage.prototype.toString=function(){
-	throw("EABSTRACT");
-};
-AbstractStorage.prototype.toJson=function(){
-	throw("EABSTRACT");
-};
+AbstractStorage.prototype.init=function(k,v){throw("EABSTRACT");};
+AbstractStorage.prototype.toString=function(){throw("EABSTRACT");};
+AbstractStorage.prototype.toJson=function(){throw("EABSTRACT");};
+//Keys 	(...interface{}) []interface{}
+AbstractStorage.prototype.Keys=function(){throw("EABSTRACT");};
+//Values 	(...interface{}) []interface{}
+AbstractStorage.prototype.Values=function(){throw("EABSTRACT");};
+//IsMap 	(...interface{}) bool
+AbstractStorage.prototype.IsMap=function(){throw("EABSTRACT");};
+//Exists 	(...interface{}) bool
+AbstractStorage.prototype.Exists=function(){throw("EABSTRACT");};
+//Find 	(...interface{}) interface{}
+AbstractStorage.prototype.Find=function(){throw("EABSTRACT");};
+//Put 	(interface{}, ...interface{}) bool
+AbstractStorage.prototype.Put=function(){throw("EABSTRACT");};
+//Remove 	(...interface{})
+AbstractStorage.prototype.Remove=function(){throw("EABSTRACT");};
+//Fprint 	(io.Writer, ...interface{}) error
+AbstractStorage.prototype.Fprint=function(){throw("EABSTRACT");};
+//String 	(...interface{}) string
+AbstractStorage.prototype.String=function(){throw("EABSTRACT");};
+//Focus 	(...interface{}) bool
+AbstractStorage.prototype.Focus=function(){throw("EABSTRACT");};
+//Reset 	(...interface{}) bool
+AbstractStorage.prototype.Reset=function(){throw("EABSTRACT");};
+//Clear 	(...interface{}) bool
+AbstractStorage.prototype.Clear=function(){throw("EABSTRACT");};
+//Close 	(...interface{}) bool
+AbstractStorage.prototype.Close=function(){throw("EABSTRACT");};
+//IsMapAt 	(interface{}, ...interface{}) bool
+AbstractStorage.prototype.IsMapAt=function(){throw("EABSTRACT");};
+//ExistsAt 	(interface{}, ...interface{}) bool
+AbstractStorage.prototype.ExistsAt=function(){throw("EABSTRACT");};
+//Push 	(interface{}, ...interface{}) int
+AbstractStorage.prototype.Push=function(){throw("EABSTRACT");};
+//Pop 	(interface{}, ...interface{}) interface{}
+AbstractStorage.prototype.Pop=function(){throw("EABSTRACT");};
+//Shift 	(interface{}, ...interface{}) int
+AbstractStorage.prototype.Shift=function(){throw("EABSTRACT");};
+//Unshift 	(interface{}, ...interface{}) interface{}
+AbstractStorage.prototype.Unshift=function(){throw("EABSTRACT");};
+//At 	(interface{}, ...interface{}) interface{}
+AbstractStorage.prototype.At=function(){throw("EABSTRACT");};
+//FocusAt 	(interface{}, ...interface{}) bool
+AbstractStorage.prototype.FocusAt=function(){throw("EABSTRACT");};
+//ClearAt 	(interface{}, ...interface{}) bool
+AbstractStorage.prototype.ClearAt=function(){throw("EABSTRACT");};
+//CloseAt 	(interface{}, ...interface{}) bool
+AbstractStorage.prototype.CloseAt=function(){throw("EABSTRACT");};
 //--------------------------------------------------------------------------------
 var Storage=function(options){
 	AbstractStorage.call(this/*,args*/);
@@ -144,66 +175,13 @@ Storage.prototype.init=function(k,v){
 	if(this.get(k)==null)this.set(k,v);
 	return this.get(k);
 }
-Storage.prototype.set=function(k,v){
-	throw("EABSTRACT");
-}
-Storage.prototype.get=function(k){
-	throw("EABSTRACT");
-}
-Storage.prototype.push=function(k,v){
-	throw("EABSTRACT");
-}
-Storage.prototype.pop=function(k,v){
-	throw("EABSTRACT");
-}
-Storage.prototype.isNew=function(){
-	return this.isnew;
-};
-Storage.prototype.clear=function(){
-	this.setdata({});
-	this.commit();
-};
-Storage.prototype.toString=function(){
-	throw("EABSTRACT");
-};
-Storage.prototype.toJson=function(){
-	return JSON.parse(this.toString());
-};
 //--------------------------------------------------------------------------------
 var ClientStorage=function(){
 	if(getEnv()!="CLIENT")throw("EENV");
 	Storage.call(this/*,args*/);
+	this.cursur=null;
 };
 ClientStorage.prototype=Object.create(Storage.prototype);
-ClientStorage.prototype.get=function(k){
-	this.load();
-	return this.data[k];
-}
-ClientStorage.prototype.at=function(k,i){
-	if(Array.isArray(this.data[k]))return this.data[k][i];
-        throw("ETYPE");
-}
-ClientStorage.prototype.set=function(k,v){
-	this.data[k]=v;
-	this.commit();
-}
-ClientStorage.prototype.push=function(k,v){
-	if(Array.isArray(this.data[k])){
-		this.data[k].push(v);
-		this.commit();
-	}else throw("ETYPE");
-}
-ClientStorage.prototype.pop=function(k){
-	if(Array.isArray(this.data[k])){
-		var ret=this.data[k].pop();
-		this.commit();
-		return ret;
-	}else throw("ETYPE");
-}
-
-ClientStorage.prototype.toString=function(k,v){
-	return localStorage.getItem(this.k);
-}
 ClientStorage.prototype.commit=function(){
 	try{
 		localStorage.setItem(this.k,JSON.stringify(this.data));
@@ -218,10 +196,63 @@ ClientStorage.prototype.load=function(){
 			localStorage.setItem(this.k,JSON.stringify({}));
 		}
 		this.setdata(JSON.parse(localStorage.getItem(this.k)));
+		this.cursor=this.data;
 	}catch(e){
 		console.error(e);throw(e);
 	}
 }
+ClientStorage.prototype.toString=function(){
+    return JSON.stringify(this.data);
+};
+ClientStorage.prototype.toJson=function(){
+    return this.data;
+};
+//Keys 	(...interface{}) []interface{}
+ClientStorage.prototype.Keys=function(){return Object.keys(this.data[k]);};
+//Values 	(...interface{}) []interface{}
+ClientStorage.prototype.Values=function(k){return Object.values(this.data[k]);};
+//IsMap 	(...interface{}) bool
+ClientStorage.prototype.IsMap=function(k){return typeof(this.data[k])!="object"&&Array.isArray(this.data[k]);};
+//Exists 	(...interface{}) bool
+ClientStorage.prototype.Exists=function(k){return typeof(this.data[k])!="undefined"};
+//Find 	(...interface{}) interface{}
+ClientStorage.prototype.Find=function(k){return this.data[k]};
+//Put 	(interface{}, ...interface{}) bool
+ClientStorage.prototype.Put=function(k,v){this.data[k]=v;this.commit();};
+//Remove 	(...interface{})
+ClientStorage.prototype.Remove=function(k){delete this.data[k];this.commit();};
+//Fprint 	(io.Writer, ...interface{}) error
+ClientStorage.prototype.Fprint=function(){throw("EIMPL");};
+//String 	(...interface{}) string
+ClientStorage.prototype.String=function(){return JSON.stringify(this.data);};
+//Focus 	(...interface{}) bool
+ClientStorage.prototype.Focus=function(k){this.cursor=this.data[k];};
+//Reset 	(...interface{}) bool
+ClientStorage.prototype.Reset=function(){this.cursor=this.data;this.commit();};
+//Clear 	(...interface{}) bool
+ClientStorage.prototype.Clear=function(){this.data={};this.cursor=this.data;this.commit();};
+//Close 	(...interface{}) bool
+ClientStorage.prototype.Close=function(k){delete this.data[k];this.commit();};
+//IsMapAt 	(interface{}, ...interface{}) bool
+ClientStorage.prototype.IsMapAt=function(){return typeof(this.data[k])=="object"&&!Array.isArray(this.data[k]);};
+//ExistsAt 	(interface{}, ...interface{}) bool
+ClientStorage.prototype.ExistsAt=function(k,i){return typeof(this.data[k])=="object"&&!Array.isArray(this.data[k])&&this.data[k].length>i;};
+//Push 	(interface{}, ...interface{}) int
+ClientStorage.prototype.Push=function(k,v){this.data[k].push(v);this.commit();};
+//Pop 	(interface{}, ...interface{}) interface{}
+ClientStorage.prototype.Pop=function(k){this.data[k].pop();this.commit();};
+//Shift 	(interface{}, ...interface{}) int
+ClientStorage.prototype.Shift=function(k){this.data[k].shift(Object.values(arguments).splice(1));this.commit();};
+//Unshift 	(interface{}, ...interface{}) interface{}
+ClientStorage.prototype.Unshift=function(k){this.data[k].unshift(Object.values(arguments).splice(1));this.commit();};
+//At 	(interface{}, ...interface{}) interface{}
+ClientStorage.prototype.At=function(k,i){return this.data[k][i];};
+//FocusAt 	(interface{}, ...interface{}) bool
+ClientStorage.prototype.FocusAt=function(i){this.cursor=this.data[k];};
+//ClearAt 	(interface{}, ...interface{}) bool
+ClientStorage.prototype.ClearAt=function(k,i){this.data[k].splice(i,1);this.commit();};
+//CloseAt 	(interface{}, ...interface{}) bool
+ClientStorage.prototype.CloseAt=function(k,i){delete this.data[k];this.commit();};
 //--------------------------------------------------------------------------------
 var ServerStorage=function(){
 	if(getEnv()!="SERVER")throw("EENV");
@@ -229,46 +260,9 @@ var ServerStorage=function(){
 	Storage.call(this/*,args*/);
 };
 ServerStorage.prototype=Object.create(Storage.prototype);
-ServerStorage.prototype.get=function(k){
-	if(this.cursor==null)throw("ECURSOR");
-	//caching.Reset();
-	if(caching.Find(this.k)==null){
-		this.isnew=true;
-		//caching.Put(this.k,{});
-		this.cursor.Put(this.k,{});
-	}
-	return caching.Find(this.k,k);
-}
-ServerStorage.prototype.at=function(k,i){
-	return caching.Find(this.k,k);
-}
-ServerStorage.prototype.set=function(k,v){
-	if(this.cursor==null)throw("ECURSOR");
-	this.cursor.Put(k,Array.isArray(v)?[v]:v);
-}
-ServerStorage.prototype.push=function(k,v){
-	if(this.cursor==null)throw("ECURSOR");
-	this.cursor.Push(k,v);
-
-};
-ServerStorage.prototype.pop=function(k){
-	if(this.cursor==null)throw("ECURSOR");
-	//return typeof(this.cursor.Remove());//Find(this.k,k);//.Pop();
-	var ret=this.cursor.Pop(k);//does not remove...
-	return ret;
-};
-ServerStorage.prototype.clear=function(){
-	caching.Remove(this.k);
-	this.load();
-};
-ServerStorage.prototype.toString=function(){
-	if(this.cursor==null)throw("ECURSOR");
-	return this.cursor.String();
-};
 ServerStorage.prototype.toJson=function(){
 	if(this.cursor==null)throw("ECURSOR");
-	caching.Reset();
-	return JSON.parse(caching.Find(this.k).String());
+	return JSON.parse(this.cursor.String());
 };
 ServerStorage.prototype.load=function(){
 	try{
@@ -280,8 +274,53 @@ ServerStorage.prototype.load=function(){
 		if(this.cursor==null)throw("ECURSOR");
 	}catch(e){throw(e);}
 }
-ServerStorage.prototype.commit=function(options){
-};
+ServerStorage.prototype.commit=function(options){};
+//Keys 	(...interface{}) []interface{}
+ServerStorage.prototype.Keys=function(){return this.cursor.Keys.apply(this,arguments);};
+//Values 	(...interface{}) []interface{}
+ServerStorage.prototype.Values=function(){return this.cursor.Keys.apply(this,arguments);};
+//IsMap 	(...interface{}) bool
+ServerStorage.prototype.IsMap=function(){return this.cursor.IsMap.apply(this,arguments);};
+//Exists 	(...interface{}) bool
+ServerStorage.prototype.Exists=function(){return this.cursor.Exists.apply(this,arguments);};
+//Find 	(...interface{}) interface{}
+ServerStorage.prototype.Find=function(){return this.cursor.Find.apply(this,arguments);};
+//Put 	(interface{}, ...interface{}) bool
+ServerStorage.prototype.Put=function(){return this.cursor.Put.apply(this,arguments);};
+//Remove 	(...interface{})
+ServerStorage.prototype.Remove=function(){return this.cursor.Remove.apply(this,arguments);};
+//Fprint 	(io.Writer, ...interface{}) error
+ServerStorage.prototype.Fprint=function(){return this.cursor.Fprint.apply(this,arguments);};
+//String 	(...interface{}) string
+ServerStorage.prototype.String=function(){return this.cursor.String.apply(this,arguments);};
+//Focus 	(...interface{}) bool
+ServerStorage.prototype.Focus=function(){return this.cursor.Focus.apply(this,arguments);};
+//Reset 	(...interface{}) bool
+ServerStorage.prototype.Reset=function(){return this.cursor.Reset.apply(this,arguments);};
+//Clear 	(...interface{}) bool
+ServerStorage.prototype.Clear=function(){return this.cursor.Clear.apply(this,arguments);};
+//Close 	(...interface{}) bool
+ServerStorage.prototype.Close=function(){return this.cursor.Close.apply(this,arguments);};
+//IsMapAt 	(interface{}, ...interface{}) bool
+ServerStorage.prototype.IsMapAt=function(){return this.cursor.IsMapAt.apply(this,arguments);};
+//ExistsAt 	(interface{}, ...interface{}) bool
+ServerStorage.prototype.ExistsAt=function(){return this.cursor.ExistsAt.apply(this,arguments);};
+//Push 	(interface{}, ...interface{}) int
+ServerStorage.prototype.Push=function(){return this.cursor.Push.apply(this,arguments);};
+//Pop 	(interface{}, ...interface{}) interface{}
+ServerStorage.prototype.Pop=function(){return this.cursor.Pop.apply(this,arguments);};
+//Shift 	(interface{}, ...interface{}) int
+ServerStorage.prototype.Shift=function(){return this.cursor.Shift.apply(this,arguments);};
+//Unshift 	(interface{}, ...interface{}) interface{}
+ServerStorage.prototype.Unshift=function(){return this.cursor.Unshift.apply(this,arguments);};
+//At 	(interface{}, ...interface{}) interface{}
+ServerStorage.prototype.At=function(){return this.cursor.At.apply(this,arguments);};
+//FocusAt 	(interface{}, ...interface{}) bool
+ServerStorage.prototype.FocusAt=function(){return this.cursor.FocusAt.apply(this,arguments);};
+//ClearAt 	(interface{}, ...interface{}) bool
+ServerStorage.prototype.ClearAt=function(){return this.cursor.ClearAt.apply(this,arguments);};
+//CloseAt 	(interface{}, ...interface{}) bool
+ServerStorage.prototype.CloseAt=function(){return this.cursor.CloseAt.apply(this,arguments);};
 //--------------------------------------------------------------------------------
 storage={
 	getEnv:getEnv,
