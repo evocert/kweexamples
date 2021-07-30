@@ -20,6 +20,10 @@ html,body{
 	padding: 2px!important;;
 	height:20px;
 }
+.menu button:hover{
+background:#442269;
+}
+
 .menu span{
 	color:#FFFFFF;
 	font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
