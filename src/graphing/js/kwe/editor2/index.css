@@ -62,8 +62,8 @@ overflow: hidden;
 }
 
 html,body{
-  background:#141414;
+  background:#141414!important;
 }
 .lm_root{
-  background:unset;
+  background:unset!important;
 }
