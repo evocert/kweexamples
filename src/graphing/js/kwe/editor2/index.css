@@ -60,3 +60,10 @@ html,body{
 .lm_item{
 overflow: hidden;
 }
+
+html,body{
+  background:#141414;
+}
+.lm_root{
+  background:unset;
+}
