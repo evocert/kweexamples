@@ -168,7 +168,6 @@ define([
 				}.bind(this)
 			}
 		);
-		//this.editor.getSession().setMode("ace/mode/javascript");
 		//this.editor.focus();
 		/*
 		this.editor.renderer.on("afterRender", function() {//return;
@@ -184,8 +183,9 @@ define([
 			})
 		}.bind(this));
 		*/
-		this.editor.session.setMode("ace/mode/"+this.options.lang)
-				this.resize();
+		//this.editor.session.setMode("ace/mode/"+this.options.lang)
+		this.editor.getSession().setMode("ace/mode/javascript");
+		this.resize();
 	}
 	Editor.prototype.val=function(val){
 		if(typeof(val)=="undefined")return this.editor.getValue();
