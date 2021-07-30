@@ -8,7 +8,8 @@ define([
 	"WinBox",
 	"xterm",
 	"xterm-addon-fit",
-	"css!./index.css"
+	"goldenlayout",
+	"css!./index.css",
 ],function(
 	module,
 	ace,
@@ -18,15 +19,16 @@ define([
 	_jq,
 	WinBox,
 	xterm,
-	xaf
+	xaf,
+	GoldenLayout
 ){
 	$=_jq;
-	//$("body").append(div_term);
 	var sf=new storage.StorageFactory();
 	var s=sf.create({k:"code"});
 	window.s=s;
-	var editors=[];
+	var editorsmap={};
 	var curEditor=0;
+	var editors=[];
 	window.editors=editors;
 	var Editor=function(options){
 		options=typeof(options)=="undefined"?{}:options;
@@ -47,20 +49,20 @@ define([
 	Editor.prototype.init=function(options){
 		window.editors.push(this);
 		this.id="ace_"+new Date().getTime();
-		this.div=$("<div/>").attr({"id":this.id});//.css({"height":"200px"});
+		this.div=$("<div/>").attr({"id":this.id});
 		$(options.node).append(this.div);
-		this.bool_vikeys=options.vi_keys;//false;
-		this.editor=ace.edit(this.id);
+		this.bool_vikeys=options.vi_keys;
+		this.editor=ace.edit(options.node);
 		this.editor.setValue(this.options.val,-1);
-		//editor.setTheme("ace/theme/tomorrow_night_eighties");//chaos");
+		this.editor.setTheme("ace/theme/tomorrow_night_eighties");//chaos");
 		//editor.setHighlightActiveLine(true);
 		//editor.setBehavioursEnabled(true);
 		//editor.setShowPrintMargin(false);
 		this.editor.on("commandExecuted",function(evt){});
 		this.editor.setOptions({
 			readOnly:options.readOnly,
-			minLines:this.options.lines,//20,
-			maxLines:this.options.lines,//20,
+			//minLines:this.options.lines,//20,
+			//maxLines:this.options.lines,//20,
 			//lines:24,
 			autoScrollEditorIntoView:true,
 			highlightActiveLine:false,
@@ -69,12 +71,12 @@ define([
 			//enableLiveAutocompletion:true,
 			//enableBasicAutocompletion:true,
 			//enableSnippets:false,
-			mode:"ace/mode/javascript",
+			//mode:"ace/mode/javascript",
 			theme:options.theme,
 		});
 		this.editor.setKeyboardHandler("ace/keyboard/vim");//set prior to loading module...
 		ace.config.loadModule(
-			'ace/keyboard/vim',
+			"ace/keyboard/vim",
 			function(module){
 				var VimApi=module.CodeMirror.Vim;
 				VimApi.defineEx("write","w",function(cm,input){
@@ -140,8 +142,6 @@ define([
 							"name":args.file.name
 						}
 					);
-					*/
-					/*
 					r.then(function(val){
 						aceenv.state.cm.openNotification(val.result,{bottom:true,duration:5000})
 					}.bind(this),function(err){
@@ -168,30 +168,43 @@ define([
 				}.bind(this)
 			}
 		);
-
-		//editor.getSession().setMode("ace/mode/c");
-		this.editor.focus();
+		//this.editor.getSession().setMode("ace/mode/javascript");
+		//this.editor.focus();
 		/*
-		editor.renderer.on('afterRender', function() {
+		this.editor.renderer.on("afterRender", function() {//return;
 			//var nlines=Math.floor($(panel.content).height()/editor.renderer.lineHeight);
-			var nlines=32;//Math.floor($(div).height()/editor.renderer.lineHeight);
-			editor.setOptions({
+			var nlines=Math.floor(Math.random()*8);//2;//Math.floor($(this.editor.container).height()/this.editor.renderer.lineHeight);
+			this.editor.setOptions({
 				minLines:nlines,
 				maxLines:nlines
 			});
-			$(editor.container).css({
+			$(this.editor.container).css({
 				height:"100%",
 				width:"100%"
 			})
 		}.bind(this));
 		*/
 		this.editor.session.setMode("ace/mode/"+this.options.lang)
+				this.resize();
 	}
 	Editor.prototype.val=function(val){
 		if(typeof(val)=="undefined")return this.editor.getValue();
 		this.editor.setValue(val);
 		this.editor.session.selection.clearSelection();
 	}
+	Editor.prototype.resize=function(){
+		//var nlines=Math.floor($(panel.content).height()/editor.renderer.lineHeight);
+		var nlines=Math.floor($(this.editor.container).height()/this.editor.renderer.lineHeight);
+		this.editor.setOptions({
+			minLines:nlines,
+			maxLines:nlines
+		});
+		$(this.editor.container).css({
+			height:"100%",
+			width:"100%"
+		});
+
+	},
 	Editor.prototype.toggleVi=function(val){
 		val=typeof(val)=="boolean"?val:!this.bool_vikeys;
 		if(this.bool_vikeys){
@@ -246,46 +259,228 @@ define([
 		s.set(this.path,this.editor.getValue());
 	}
 	module.exports=function(){
-		var div=$("<div/>").css({});
-		index=$(index);
-		div.append(index);
-		var div0=$("<div/>").css({"display":"flex"});
-		var divedt0=$("<div/>").css({"height":"auto","width":"50%"}).addClass("alt-1");
-		divedt0.append($("<div/>").addClass("title").text("Server").append($("<sup/>").text("[alt-1]")));
-		var divedt1=$("<div/>").css({"height":"auto","width":"50%"}).addClass("alt-2");
-		divedt1.append($("<div/>").addClass("title").text("Client").append($("<sup/>").text("[alt-2]")));
-		div0.append(divedt0);
-		div0.append(divedt1);
-		var div1=$("<div/>").css({});
-		div1.append($("<div/>").addClass("title").text("Library").append($("<sup/>").text("[alt-2]")));
-		var divedt2=$("<div/>").css({"height":"auto","width":"100%"}).addClass("alt-3");
-		var div2=$("<div/>").css({});
-		div2.append($("<div/>").addClass("title").text("Output").append($("<sup/>").text("[alt-3]")));
-		var divedt3=$("<div/>").css({"height":"auto","width":"100%"}).addClass("alt-4");
-		div1.append(divedt2);
-		div2.append(divedt3);
-		div.append(div0)
-		div.append(div1)
-		div.append(div2)
-		$("body").append(div);
-		var edt_srv_opts=s.init("edt_srv",{vi_keys:false});
-		var edt_cli_opts=s.init("edt_cli",{vi_keys:false});
-		var edt_lib_opts=s.init("edt_lib",{vi_keys:false});
-		var edt_out_opts=s.init("edt_out",{vi_keys:false});
-		var edt_srv=new Editor({node:divedt0,val:"",lines:10,vi_keys:edt_srv_opts.vi_keys,lang:"javascript",commands:{run:function(){runsrv();}}});
-		var edt_cli=new Editor({node:divedt1,val:"",lines:10,vi_keys:edt_cli_opts.vi_keys,lang:"javascript",commands:{run:function(){runcli();}}});
-		var edt_lib=new Editor({node:divedt2,val:"",lines:10,vi_keys:edt_lib_opts.vi_keys,lang:"javascript",commands:{run:function(){}}});
-		var edt_out=new Editor({node:divedt3,val:"",lines:15,vi_keys:edt_out_opts.vi_keys,readOnly:true,theme:"chaos",commands:{run:function(){}}});
-		edt_srv.load("./res/test0_srv.js");
-		edt_cli.load("./res/test0_cli.js");
-		edt_lib.load("./res/storage.js");
+		//--------------------------------------------------------------------------------
+		var config={
+			settings:{
+				hasHeaders:true,
+				constrainDragToContainer:true,
+				reorderEnabled:true,
+				selectionEnabled:true,
+				popoutWholeStack:false,
+				blockedPopoutsThrowError:true,
+				closePopoutsOnUnload:true,
+				showPopoutIcon:false,
+				showMaximiseIcon:false,
+				showCloseIcon:false
+			},
+			dimensions:{
+				borderWidth:5,
+				minItemHeight:0,
+				minItemWidth:0,
+				//headerHeight:20,
+				dragProxyWidth:300,
+				dragProxyHeight:200
+			},
+			labels:{
+				close:"close",
+				maximise:"maximise",
+				minimise:"minimise",
+				popout:"open in new window"
+			},
+			content:[
+				{
+					type:"column",
+					content:[
+						{
+							type:"row",
+							id:"row0",
+							//width:1,
+							height:6,
+
+							content:[
+								{
+									hasHeaders: false,
+									constrainDragToContainer: false,
+									reorderEnabled: false,
+									selectionEnabled: false,
+									type:"component",
+									title:"Menu",
+									isClosable: false,
+									componentName:"menuComponent",
+									componentState:{},
+									id: "menu",
+									//width: 30,
+									//height: 30,
+									activeItemIndex: 1
+								}
+							]
+						},
+						{
+							type:"row",
+							id:"row1",
+							content:[
+								{
+									type:"component",
+									id:"edt_srv",
+									title:"Server",
+									isClosable: false,
+									componentName:"editorComponent",
+									componentState:{options:{path:"./res/test0_srv.js",val:"",lines:15,vi_keys:false,readOnly:false,theme:"monokai",commands:{run:function(){}}}}
+								},{
+									type:"component",
+									id:"edt_cli",
+									isClosable:false,
+									title:"Client",
+									//componentName:"renderComponent",
+									componentName:"editorComponent",
+									componentState:{options:{path:"./res/test0_cli.js",val:"",lines:15,vi_keys:false,readOnly:false,theme:"chaos",commands:{run:function(){}}}}
+								}
+							]
+						},
+						{
+							type:"row",
+							content:[
+								{
+									type:"component",
+									title:"Library",
+									id:"edt_lib",
+									isClosable: false,
+									componentName:"editorComponent",
+									componentState:{options:{path:"./res/storage.js",val:"",lines:15,vi_keys:false,readOnly:false,theme:"chaos",commands:{run:function(){}}}}
+								}
+							]
+						},
+						{
+							type:"row",
+							content:[
+								{
+									type:"component",
+									title:"Output",
+									id:"edt_out",
+									isClosable: false,
+									componentName:"editorComponent",
+									componentState:{options:{val:"",lines:15,vi_keys:false,readOnly:true,theme:"chaos",commands:{run:function(){}}}}
+								}
+							]
+						}
+					]
+				}
+			]
+		};
+		var div_wrapper_goldenlayout=$("body");
+		var layout;
+		var savedState=localStorage.getItem("savedState");
+		if(savedState!==null){
+			layout=new GoldenLayout(JSON.parse(savedState),div_wrapper_goldenlayout);
+		}else{
+			layout=new GoldenLayout(config,div_wrapper_goldenlayout);
+		}
+		layout.on("stateChanged",function(){
+			var state=JSON.stringify( layout.toConfig());
+			localStorage.setItem("savedState",state);
+		});
+		//layout=new GoldenLayout(config,div_wrapper_goldenlayout);
+		window.m=layout;
+		layout.registerComponent("menuComponent",function(container,componentState){
+			var div=$("<div/>");
+console.log("//container");
+console.log(container);
+console.log("//container");
+			//container.getElement().css({"max-height":20});
+			div.append($(`
+				<div class="menu">
+					<button id="run_srv" class="alt-u"style="">Run Srv<sup>[alt-u]</sup></button>
+					<button id="run_cli" class="alt-i"style="">Run Cli<sup>[alt-i]</sup></button>
+					<button id="reset" class="alt-q" tooltip="Alt-Q" style="">Reload Srv<sup>[alt-q]</sup></button>
+					<button id="save" class="alt-w" tooltip="Alt-W" style="">Commit Loc<sup>[alt-w]</sup></button>
+					<button id="commit" class="alt-c" tooltip="Alt-C" style="">Commit Srv<sup>[alt-c]</sup></button>
+					<button id="vkeys" class="alt-k" tooltip="Alt-R" style="">Vi-keys <sup>[alt-k]</sup></button>
+					<span style="">SRV/CLI Executor</span>
+				</div>
+			`));
+			$(container.getElement()).append(div);
+			container.on("tab",function(tab){
+				//tab.setActive(false);
+				tab.header.element.remove()
+			});
+		});
+		layout.registerComponent("editorComponent",function(container,componentState){
+			console.log("----");
+			console.log(this);
+			console.log(container);
+			console.log("/----");
+			if(componentState.options==null)return;
+			var options=componentState.options;
+			options.node=container.getElement()[0];
+			container.editor=new Editor(options);
+			if(options.path!=null)container.editor.load(options.path);
+			editorsmap[container._config.id]=container.editor;
+			//editors.push(container.editor.load(options.path));
+			//$(container.getElement()).append(div_output)
+			container.on("stateChanged",function(){
+				container.editor.resize();
+				//console.log("resize");return;////tab.setActive(false);
+				//tab.header.element.remove()
+			});
+			container.editor.resize();
+		}.bind(this));
+
+
+
+		/*
+		layout.on("initalised",function(a,b,c){
+		});
+		layout.on("windowCreated",function(a,b,c){
+		});
+		layout.on("windowClosed",function(a,b,c){
+		});
+		layout.on("selectionChanged",function(a,b,c){
+		});
+		layout.on("itemDestroyed",function(a,b,c){
+		});
+		layout.on("itemCreated",function(a,b,c){
+		});
+		layout.on("componentCreated",function(a,b,c){
+		});
+		layout.on("rowCreated",function(a,b,c){
+		});
+		layout.on("columnCreated",function(a,b,c){
+		});
+		layout.on("stackCreated",function(a,b,c){
+		});
+		layout.on("tab",function(a,b,c){
+		});
+		layout.on("tabCreated",function(a,b,c){
+			console.log("tabCreated")
+			console.log(this)
+			console.log(this.options)
+			console.log(arguments)
+			console.log(a.contentItem);
+			switch(a.contentItem.componentName){
+				case"editorComponent":
+					this.active_editor=a.contentItem.instance.editor;
+					break;
+				default:
+					break;
+			}
+			//temp1.contentItem.instance
+		}.bind(this));
+		*/
+		layout.on("stateChanged",function(){
+			//var state=JSON.stringify(layout.toConfig());
+			//localStorage.setItem("savedState",state);
+//$($(".lm_splitter")[0]).remove()
+		});
+		layout.init();
+//qwer=m.root.getItemsById("menu")[0]
+//qwer.tab.element.remove()
 		var runsrv=function(){
 			var progress=new Progress({msg:"running server"});
 			//var progress3=mkprogress("Running...",100);
 			var src="";
-			src+=edt_lib.val();
+			src+=editorsmap.edt_lib.val();
 			src+="\n";
-			src+=edt_srv.val()
+			src+=editorsmap.edt_srv.val()
 			$.ajax({
 				type: "POST",
 				headers:{
@@ -296,9 +491,9 @@ define([
 				complete: function(r){
 					progress.close();
 					if(typeof(r.responseJSON)!="undefined"){
-						edt_out.val(JSON.stringify(r.responseJSON,0,2));
+						editorsmap.edt_out.val(JSON.stringify(r.responseJSON,0,2));
 					}else{
-						edt_out.val(JSON.stringify(r.responseText));
+						editorsmap.edt_out.val(JSON.stringify(r.responseText));
 					}
 				}
 			});
@@ -310,14 +505,14 @@ define([
 			var ret;
 			try{
 				var src="";
-				src+=edt_lib.val();
+				src+=editorsmap.edt_lib.val();
 				src+="\n";
-				src+=edt_cli.val();
+				src+=editorsmap.edt_cli.val();
 				ret=eval(src);
 			}catch(e){
 				ret=e.toString();
 			}
-			edt_out.val(JSON.stringify(ret,0,2));
+			editorsmap.edt_out.val(JSON.stringify(ret,0,2));
 		};
 		var toggleVi=function(){
 			var progress=new Progress({msg:"toggling vi-keys",timeout:200});
@@ -366,125 +561,117 @@ define([
 			edt_srv.reload();
 			edt_lib.reload();
 		});
-
-window.setTimeout(function(){
-var fitAddon=new xaf.FitAddon();
-        var term;
-	var wb=
-new WinBox({
-
-    id: "xterm",
-    //class: ["no-full", "my-theme"],
-    root: document.body,
-    title: "xterm.js",
-    background: "#fff",
-    border: 4,
-    width: 200,
-    height: 200,
-    //x: "center",
-    //y: "center",
-    max: false,
-    splitscreen: true,
-    //top: 50,
-    //right: 50,
-    bottom: 0,
-    left: 50,
-    //html: "width: 200, height: 200",
-    onfocus: function(){
-	fitAddon.fit();
-	/*
-        this.setBackground("#fff");
-	*/
-    },
-    onblur: function(){
-	/*
-        this.setBackground("#999");
-	*/
-    },
-    onresize: function(width, height){
-	fitAddon.fit();
-	/*
-        this.body.textContent = (
-            "width: " + width + ", " +
-            "height: " + height
-        );
-	*/
-    },
-    onmove: function(x, y){
-	/*
-        this.body.textContent = (
-            "x: " + x + ", " +
-            "y: " + y
-        );
-	*/
-    },
-    onclose: function(force){
-        return !confirm("Close window?");
-    }
-});
-
-        term=new xterm.Terminal();
-        term.open(wb.body);
-        term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')	
-	term.onKey(e => {
-	    //console.log(e.key);
-	    term.write(e.key);
-	    if (e.key == '\r')
-		term.write('\n');
-	})
-term.loadAddon(fitAddon);
-window.fitAddon=fitAddon;
-	window.term=term;
-fitAddon.fit();
-
-}.bind(this),500);
+		//--------------------------------------------------------------------------------
+		$(document).on("keydown",function(e){
+			if(e.altKey&&e.key=="n"){
+				curEditor++;
+				if(curEditor>editors.length-1)curEditor=0;
+				if(editors.length>0)editors[curEditor].editor.focus();
+			}
+			if(e.altKey&&e.key=="+"){
+				var curlines=editors[curEditor].editor.getOption("maxLines");
+				editors[curEditor].editor.setOption("minLines",curlines+1);
+				editors[curEditor].editor.setOption("maxLines",curlines+1);
+			}
+			if(e.altKey&&e.key=="-"){
+				var curlines=editors[curEditor].editor.getOption("maxLines");
+				curlines=curlines<1?1:curlines;
+				editors[curEditor].editor.setOption("minLines",curlines-1);
+				editors[curEditor].editor.setOption("maxLines",curlines-1);
+			}
 
 
-		//m=new Menu();
+			if(e.altKey&&e.key=="p"){
+				curEditor--;
+				if(curEditor<0)curEditor=editors.length-1;
+				if(editors.length>0)editors[curEditor].editor.focus();
+			}
+			if(!e.ctrlKey&&e.altKey&&e.key.length==1){
+				//e.stopPropagation();
+				//e.preventDefault();
+				$("."+"alt-"+e.key).click();
+				//if($("."+"alt-"+e.key).length==0)return;
+				//if(($("."+"alt-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
+				//$("."+"alt-"+e.key).focus();
+				$("."+"alt-"+e.key).find("textarea").focus();
+			}
+			if(e.ctrlKey&&e.altKey&&e.key.length==1){
+				//e.stopPropagation();
+				//e.preventDefault();
+				$("."+"ctrl-alt-"+e.key).click();
+				if($("."+"ctrl-alt"+e.key).length==0)return;
+				if(($("."+"ctrl-alt-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
+				$("."+"ctrl-alt-"+e.key).focus();
+			}
+		});
+		//--------------------------------------------------------------------------------
+		/*
+		window.setTimeout(function(){
+			var fitAddon=new xaf.FitAddon();
+			var term;
+			var wb=new WinBox({
+				id: "xterm",
+				//class: ["no-full", "my-theme"],
+				root: document.body,
+				title: "xterm.js",
+				background: "#fff",
+				border: 4,
+				width: 200,
+				height: 200,
+				//x: "center",
+				//y: "center",
+				max: false,
+				splitscreen: true,
+				//top: 50,
+				//right: 50,
+				bottom: 0,
+				left: 50,
+				//html: "width: 200, height: 200",
+				onfocus: function(){
+				fitAddon.fit();
+					//this.setBackground("#fff");
+				},
+				onblur: function(){
+					//this.setBackground("#999");
+				},
+				onresize: function(width, height){
+				fitAddon.fit();
+					//this.body.textContent = (
+					//	"width: " + width + ", " +
+					//	"height: " + height
+					//);
+				},
+				onmove: function(x, y){
+					//this.body.textContent = (
+					//	"x: " + x + ", " +
+					//	"y: " + y
+					//);
+				},
+				onclose: function(force){
+					return !confirm("Close window?");
+				}
+			});
+			term=new xterm.Terminal();
+			term.open(wb.body);
+			term.write("Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ")	
+			term.onKey(e => {
+				//console.log(e.key);
+				term.write(e.key);
+				if (e.key == "\r")
+				term.write("\n");
+			})
+			term.loadAddon(fitAddon);
+			window.fitAddon=fitAddon;
+			window.term=term;
+			fitAddon.fit();
+		}.bind(this),500);
+		*/
 	};
-	$(document).on("keydown",function(e){
-		if(e.altKey&&e.key=="n"){
-			curEditor++;
-			if(curEditor>editors.length-1)curEditor=0;
-			if(editors.length>0)editors[curEditor].editor.focus();
-		}
-		if(e.altKey&&e.key=="+"){
-			var curlines=editors[curEditor].editor.getOption("maxLines");
-			editors[curEditor].editor.setOption("minLines",curlines+1);
-			editors[curEditor].editor.setOption("maxLines",curlines+1);
-		}
-		if(e.altKey&&e.key=="-"){
-			var curlines=editors[curEditor].editor.getOption("maxLines");
-			curlines=curlines<1?1:curlines;
-			editors[curEditor].editor.setOption("minLines",curlines-1);
-			editors[curEditor].editor.setOption("maxLines",curlines-1);
-		}
 
-
-		if(e.altKey&&e.key=="p"){
-			curEditor--;
-			if(curEditor<0)curEditor=editors.length-1;
-			if(editors.length>0)editors[curEditor].editor.focus();
-		}
-		if(!e.ctrlKey&&e.altKey&&e.key.length==1){
-			//e.stopPropagation();
-			//e.preventDefault();
-			$("."+"alt-"+e.key).click();
-			//if($("."+"alt-"+e.key).length==0)return;
-			//if(($("."+"alt-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
-			//$("."+"alt-"+e.key).focus();
-			$("."+"alt-"+e.key).find("textarea").focus();
-		}
-		if(e.ctrlKey&&e.altKey&&e.key.length==1){
-			//e.stopPropagation();
-			//e.preventDefault();
-			$("."+"ctrl-alt-"+e.key).click();
-			if($("."+"ctrl-alt"+e.key).length==0)return;
-			if(($("."+"ctrl-alt-"+e.key)[0].type=="textarea"||$("."+"alt-"+e.key)[0].type=="input")||(e.target.type!="textarea"&&e.target.type=="input"))
-			$("."+"ctrl-alt-"+e.key).focus();
-		}
-	});
 
 
 
 });
+
+
+

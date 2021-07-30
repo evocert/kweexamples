@@ -16,7 +16,8 @@ requirejs.config({
 		"jspanel.contextmenu":"./js/jspanel/jspanel.contextmenu",
 		"WinBox":"./js/winbox/winbox.bundle",
 		"xterm":"./js/xterm/xterm.min",
-		"xterm-addon-fit":"./js/xterm/xterm-addon-fit"
+		"xterm-addon-fit":"./js/xterm/xterm-addon-fit",
+		"goldenlayout":"./js/goldenlayout/goldenlayout.min",
 	},
 	"packages":[],
 	"config":{
@@ -57,7 +58,14 @@ requirejs.config({
 		},
 		"xterm-addon-fit":{
 			"deps":["xterm"]
-		}
+		},
+		"goldenlayout":{
+			"deps":[
+				"css!./js/goldenlayout/goldenlayout-base.css",
+				"css!./js/goldenlayout/goldenlayout-dark-theme.css",
+			]
+		},
+
 
 	},
 	"deps":[]

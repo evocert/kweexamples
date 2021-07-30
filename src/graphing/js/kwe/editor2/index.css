@@ -1,8 +1,10 @@
 html,body{
 	background:#272727;
+	height:100%;
+	width:100%;
 }
 .ace_focus{
-	background:#444444;;
+	background:#444444!important;
 }
 .menu{margin-bottom:8px;}
 .menu select{vertical-align:top;}
@@ -54,4 +56,7 @@ html,body{
 }
 .winbox .wb-icon {
     /*filter: invert(1);*/
+}
+.lm_item{
+overflow: hidden;
 }
